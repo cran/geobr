@@ -1,5 +1,6 @@
-#' Download shape files of Brazilian municipalities as sf objects. Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
+#' Download shape files of Brazilian municipalities as sf objects.
 #'
+#' Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
 #'
 #'
 #' @param year Year of the data (defaults to 2010)
@@ -32,17 +33,8 @@ read_municipality <- function(code_muni, year=NULL){
 
 
 # Get metadata with data addresses
-  tempf <- file.path(tempdir(), "metadata.rds")
+  metadata <- download_metadata()
 
-  # check if metadata has already been downloaded
-  if (file.exists(tempf)) {
-     metadata <- readr::read_rds(tempf)
-
-  } else {
-  # download it and save to metadata
-    httr::GET(url="http://www.ipea.gov.br/geobr/metadata/metadata.rds", httr::write_disk(tempf, overwrite = T))
-    metadata <- readr::read_rds(tempf)
-  }
 
 # Select metadata geo
   temp_meta <- subset(metadata, geo=="municipio")
@@ -93,14 +85,20 @@ read_municipality <- function(code_muni, year=NULL){
       # list paths of files to download
       filesD <- as.character(temp_meta$download_path)
 
+      # input for progress bar
+      total <- length(filesD)
+      pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
 
       # download files
-      counter <- 0
-      lapply(X=filesD, function(X){ counter <<- counter + 1
-                                    print(paste("Downloading ", counter, " of 27 files"))
-                                    httr::GET(url=X, httr::progress(),
-                                              httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(X,"/"),tail,n=1L))), overwrite = T))})
-
+      lapply(X=filesD, function(x){
+        i <- match(c(x),filesD);
+        httr::GET(url=x, #httr::progress(),
+                  httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T));
+        utils::setTxtProgressBar(pb, i)
+      }
+      )
+      # closing progress bar
+      close(pb)
 
       # read files and pile them up
       files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))

@@ -1,5 +1,7 @@
 #' Download shape files of meso region as sf objects. Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
 #'
+#' Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
+#'
 #' @param year Year of the data (defaults to 2010)
 #' @param code_meso The 4-digit code of a meso region. If the two-digit code or a two-letter uppercase abbreviation of
 #'  a state is passed, (e.g. 33 or "RJ") the function will load all meso regions of that state. If code_meso="all", all meso regions of the country are loaded.
@@ -26,17 +28,7 @@ read_meso_region <- function(code_meso, year=NULL){
 
 
   # Get metadata with data addresses
-  tempf <- file.path(tempdir(), "metadata.rds")
-
-  # check if metadata has already been downloaded
-  if (file.exists(tempf)) {
-    metadata <- readr::read_rds(tempf)
-
-  } else {
-    # download it and save to metadata
-    httr::GET(url="http://www.ipea.gov.br/geobr/metadata/metadata.rds", httr::write_disk(tempf, overwrite = T))
-    metadata <- readr::read_rds(tempf)
-  }
+  metadata <- download_metadata()
 
 
   # Select geo
@@ -65,11 +57,20 @@ read_meso_region <- function(code_meso, year=NULL){
     # list paths of files to download
     filesD <- as.character(temp_meta$download_path)
 
+    # input for progress bar
+      total <- length(filesD)
+      pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
 
     # download files
-    lapply(X=filesD, function(x) httr::GET(url=x, httr::progress(),
-                                           httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T)) )
-
+      lapply(X=filesD, function(x){
+                                    i <- match(c(x),filesD);
+                                    httr::GET(url=x, #httr::progress(),
+                                            httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T));
+                                    utils::setTxtProgressBar(pb, i)
+                                  }
+             )
+    # closing progress bar
+      close(pb)
 
     # read files and pile them up
     files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))

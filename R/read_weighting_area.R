@@ -1,4 +1,6 @@
-#' Download shape files of Census Weighting Areas (area de ponderação) of the Brazilian Population Census. Only 2010 data is currently available.
+#' Download shape files of Census Weighting Areas (area de ponderacao) of the Brazilian Population Census.
+#'
+#' Only 2010 data is currently available.
 #'
 #' @param code_weighting The 7-digit code of a Municipality. If the two-digit code or a two-letter uppercase abbreviation of
 #'  a state is passed, (e.g. 33 or "RJ") the function will load all weighting areas of that state. If code_weighting="all",
@@ -33,17 +35,7 @@
 read_weighting_area <- function(code_weighting, year = NULL){ #code_weighting=1400100
 
   # Get metadata with data addresses
-  tempf <- file.path(tempdir(), "metadata.rds")
-
-  # check if metadata has already been downloaded
-  if (file.exists(tempf)) {
-    metadata <- readr::read_rds(tempf)
-
-  } else {
-    # download it and save to metadata
-    httr::GET(url="http://www.ipea.gov.br/geobr/metadata/metadata.rds", httr::write_disk(tempf, overwrite = T))
-    metadata <- readr::read_rds(tempf)
-  }
+  metadata <- download_metadata()
 
 
   # Select geo
@@ -70,11 +62,20 @@ read_weighting_area <- function(code_weighting, year = NULL){ #code_weighting=14
         # list paths of files to download
         filesD <- as.character(temp_meta$download_path)
 
+        # input for progress bar
+        total <- length(filesD)
+        pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
 
         # download files
-        lapply(X=filesD, function(x) httr::GET(url=x, httr::progress(),
-                                               httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T)) )
-
+        lapply(X=filesD, function(x){
+          i <- match(c(x),filesD);
+          httr::GET(url=x, #httr::progress(),
+                    httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T));
+          utils::setTxtProgressBar(pb, i)
+        }
+        )
+        # closing progress bar
+        close(pb)
 
         # read files and pile them up
         files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))
@@ -122,4 +123,3 @@ read_weighting_area <- function(code_weighting, year = NULL){ #code_weighting=14
     }
   }
 }
-

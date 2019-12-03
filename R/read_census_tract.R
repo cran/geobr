@@ -34,19 +34,11 @@
 read_census_tract <- function(code_tract, year = NULL, zone = "urban"){
 
   # Get metadata with data addresses
-  tempf <- file.path(tempdir(), "metadata.rds")
-  # check if metadata has already been downloaded
-  if (file.exists(tempf)) {
-    metadata <- readr::read_rds(tempf)
+  metadata <- download_metadata()
 
-  } else { # download it and save to metadata
-    httr::GET(url="http://www.ipea.gov.br/geobr/metadata/metadata.rds", httr::write_disk(tempf, overwrite = T))
-    metadata <- readr::read_rds(tempf)
-  }
 
   # Select geo
   temp_meta <- subset(metadata, geo=="setor_censitario")
-
 
 
 
@@ -80,14 +72,20 @@ read_census_tract <- function(code_tract, year = NULL, zone = "urban"){
       # list paths of files to download
       filesD <- as.character(temp_meta$download_path)
 
+      # input for progress bar
+      total <- length(filesD)
+      pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
 
       # download files
-      counter <- 0
-      lapply(X=filesD, function(X){ counter <<- counter + 1
-      print(paste("Downloading ", counter, " of ",length(filesD)," files"))
-      httr::GET(url=X, httr::progress(),
-                httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(X,"/"),tail,n=1L))), overwrite = T))})
-
+      lapply(X=filesD, function(x){
+        i <- match(c(x),filesD);
+        httr::GET(url=x, #httr::progress(),
+                  httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T));
+        utils::setTxtProgressBar(pb, i)
+      }
+      )
+      # closing progress bar
+      close(pb)
 
       # read files and pile them up
       files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))

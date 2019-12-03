@@ -17,7 +17,7 @@
 #'
 #'}
 
-read_statistical_grid <- function(code_grid, year=NULL){
+read_statistical_grid <- function(code_grid, year=NULL){ # nocov start
 
 # Verify year input
   if (is.null(year)){ message("Using data from year 2010 /n")
@@ -33,19 +33,8 @@ read_statistical_grid <- function(code_grid, year=NULL){
   data("grid_state_correspondence_table", envir=environment())
 
 
-# Get metadata with data addresses
-  tempf <- file.path(tempdir(), "metadata.rds")
-
-  # check if metadata has already been downloaded
-  if (file.exists(tempf)) {
-     metadata <- readr::read_rds(tempf)
-
-  } else {
-
-  # download it and save to metadata
-    httr::GET(url="http://www.ipea.gov.br/geobr/metadata/metadata.rds", httr::write_disk(tempf, overwrite = T))
-    metadata <- readr::read_rds(tempf)
-  }
+  # Get metadata with data addresses
+  metadata <- download_metadata()
 
 
 
@@ -54,7 +43,7 @@ read_statistical_grid <- function(code_grid, year=NULL){
 
 
 
-# Verify code_grid input
+# Verify code_grid input ----------------------------------
 
   # Test if code_grid input is null
     if(is.null(code_grid)){ stop("Value to argument 'code_grid' cannot be NULL") }
@@ -65,9 +54,20 @@ read_statistical_grid <- function(code_grid, year=NULL){
       # list paths of files to download
       filesD <- as.character(temp_meta$download_path)
 
+      # input for progress bar
+      total <- length(filesD)
+      pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
+
       # download files
-      lapply(X=filesD, function(x) httr::GET(url=x, httr::progress(),
-                                             httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T)) )
+      lapply(X=filesD, function(x){
+        i <- match(c(x),filesD);
+        httr::GET(url=x, #httr::progress(),
+                  httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T));
+        utils::setTxtProgressBar(pb, i)
+      }
+      )
+      # closing progress bar
+      close(pb)
 
       # read files and pile them up
       files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))
@@ -78,7 +78,7 @@ read_statistical_grid <- function(code_grid, year=NULL){
     }
 
 
-# if code_grid is a state abbreviation
+# if code_grid is a state abbreviation  ----------------------------------
 
   # Error if the input does not match any state abbreviation
   if(is.character(code_grid) & !(code_grid %in% grid_state_correspondence_table$code_state)) {
@@ -115,7 +115,7 @@ read_statistical_grid <- function(code_grid, year=NULL){
       }
 
 
-# if code_grid is numeric grid quadrant
+# if code_grid is numeric grid quadrant  ----------------------------------
     if( !( code_grid %in% temp_meta$code)){ stop("Error: Invalid Value to argument code_grid.")
 
     } else{
@@ -131,6 +131,6 @@ read_statistical_grid <- function(code_grid, year=NULL){
     shape <- readr::read_rds(temps)
     return(shape)
   }
-}
+} # nocov end
 
 

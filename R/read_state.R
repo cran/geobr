@@ -1,4 +1,6 @@
-#' Download shape files of Brazilian states as sf objects. Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
+#' Download shape files of Brazilian states as sf objects.
+#'
+#' Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
 #'
 #' @param year Year of the data (defaults to 2010)
 #' @param code_state The two-digit code of a state or a two-letter uppercase abbreviation (e.g. 33 or "RJ"). If code_state="all", all states will be loaded.
@@ -22,17 +24,7 @@
 read_state <- function(code_state, year=NULL){
 
   # Get metadata with data addresses
-  tempf <- file.path(tempdir(), "metadata.rds")
-
-  # check if metadata has already been downloaded
-  if (file.exists(tempf)) {
-    metadata <- readr::read_rds(tempf)
-
-  } else {
-    # download it and save to metadata
-    httr::GET(url="http://www.ipea.gov.br/geobr/metadata/metadata.rds", httr::write_disk(tempf, overwrite = T))
-    metadata <- readr::read_rds(tempf)
-  }
+  metadata <- download_metadata()
 
 
   # Select geo
@@ -56,6 +48,16 @@ read_state <- function(code_state, year=NULL){
   x <- year
 
 if( x < 1992){
+
+#   if( !(substr(x = code_state, 1, 2) %in% temp_meta$code) &
+#       !(substr(x = code_state, 1, 2) %in% temp_meta$code_abrev) &
+#       !(substr(x = code_state, 1, 3) %in% "all")) {
+#       stop("Error: Invalid Value to argument code_state.")
+#       }
+
+  if(is.null(code_state)){ stop("Value to argument 'code_state' cannot be NULL") }
+
+  message("Loading data for the whole country\n")
 
   # list paths of files to download
   filesD <- as.character(temp_meta$download_path)
@@ -84,10 +86,20 @@ if( x < 1992){
       # list paths of files to download
       filesD <- as.character(temp_meta$download_path)
 
-      # download files
-      lapply(X=filesD, function(x) httr::GET(url=x, httr::progress(),
-                                             httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T)) )
+      # input for progress bar
+      total <- length(filesD)
+      pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
 
+      # download files
+      lapply(X=filesD, function(x){
+        i <- match(c(x),filesD);
+        httr::GET(url=x, #httr::progress(),
+                  httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T));
+        utils::setTxtProgressBar(pb, i)
+      }
+      )
+      # closing progress bar
+      close(pb)
 
       # read files and pile them up
       files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))
