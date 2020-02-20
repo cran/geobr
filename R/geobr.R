@@ -9,6 +9,8 @@
 #' @docType package
 #' @name geobr
 #' @importFrom utils "tail"
+
+# nocov start
 NULL
 
 ## quiets concerns of R CMD check re: the .'s that appear in pipelines
@@ -24,8 +26,12 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c('brazil_2010',
                                                         'abbrev_state',
                                                         'code_region',
                                                         'name_region',
+                                                        'name_muni_format',
+                                                        'tp',
+                                                        'filesD',
+                                                        'temp_meta',
                                                         'group_by'))
 
 .onLoad <- function(lib, pkg) {
   requireNamespace("sf")
-}
+} # nocov end

@@ -4,10 +4,12 @@
 \alias{read_semiarid}
 \title{Download official data of Brazilian Semiarid as an sf object.}
 \usage{
-read_semiarid(year = NULL)
+read_semiarid(year = NULL, tp = "simplified")
 }
 \arguments{
 \item{year}{A date number in YYYY format (defaults to 2017)}
+
+\item{tp}{Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)}
 }
 \description{
 This data set covers the whole of Brazilian Semiarid as defined in the resolution in  23/11/2017). The original
@@ -24,18 +26,20 @@ library(geobr)
 
 }
 \seealso{
-Other general area functions: \code{\link{read_amazon}},
-  \code{\link{read_biomes}},
-  \code{\link{read_census_tract}},
-  \code{\link{read_conservation_units}},
-  \code{\link{read_country}},
-  \code{\link{read_immediate_region}},
-  \code{\link{read_intermediate_region}},
-  \code{\link{read_meso_region}},
-  \code{\link{read_micro_region}},
-  \code{\link{read_municipality}},
-  \code{\link{read_region}}, \code{\link{read_state}},
-  \code{\link{read_statistical_grid}},
-  \code{\link{read_weighting_area}}
+Other general area functions: 
+\code{\link{read_amazon}()},
+\code{\link{read_biomes}()},
+\code{\link{read_census_tract}()},
+\code{\link{read_conservation_units}()},
+\code{\link{read_country}()},
+\code{\link{read_immediate_region}()},
+\code{\link{read_intermediate_region}()},
+\code{\link{read_meso_region}()},
+\code{\link{read_micro_region}()},
+\code{\link{read_municipality}()},
+\code{\link{read_region}()},
+\code{\link{read_state}()},
+\code{\link{read_statistical_grid}()},
+\code{\link{read_weighting_area}()}
 }
 \concept{general area functions}

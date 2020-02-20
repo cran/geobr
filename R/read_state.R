@@ -1,9 +1,10 @@
-#' Download shape files of Brazilian states as sf objects.
+#' Download shapefiles of Brazilian states as sf objects.
 #'
 #' Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
 #'
 #' @param year Year of the data (defaults to 2010)
 #' @param code_state The two-digit code of a state or a two-letter uppercase abbreviation (e.g. 33 or "RJ"). If code_state="all", all states will be loaded.
+#' @param tp Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)
 #' @export
 #' @family general area functions
 #' @examples \donttest{
@@ -21,14 +22,16 @@
 #'
 #'}
 
-read_state <- function(code_state, year=NULL){
+read_state <- function(code_state="all", year=NULL, tp="simplified"){
 
   # Get metadata with data addresses
   metadata <- download_metadata()
 
-
   # Select geo
-  temp_meta <- subset(metadata, geo=="uf")
+  temp_meta <- subset(metadata, geo=="state")
+
+  # Select data type
+  temp_meta <- select_data_type(temp_meta, tp)
 
   # Verify year input
   if (is.null(year)){ message("Using data from year 2010\n")
@@ -63,11 +66,10 @@ if( x < 1992){
   filesD <- as.character(temp_meta$download_path)
 
   # download files
-  temps <- paste0(tempdir(),"/", unlist(lapply(strsplit(filesD,"/"),tail,n=1L)))
-  httr::GET(url=filesD, httr::progress(), httr::write_disk(temps, overwrite = T))
+  temps <- download_gpkg(filesD)
 
   # read sf
-  temp_sf <- readr::read_rds(temps)
+  temp_sf <- sf::st_read(temps, quiet=T)
 
   return(temp_sf)
 } else {
@@ -76,9 +78,6 @@ if( x < 1992){
 # BLOCK 2.2 From 2000 onwards  ----------------------------
 
   # Verify code_state input
-
-  # Test if code_state input is null
-  if(is.null(code_state)){ stop("Value to argument 'code_state' cannot be NULL") }
 
   # if code_state=="all", read the entire country
     if(code_state=="all"){ message("Loading data for the whole country\n")
@@ -92,9 +91,9 @@ if( x < 1992){
 
       # download files
       lapply(X=filesD, function(x){
-        i <- match(c(x),filesD);
+        i <- match(c(x),filesD)
         httr::GET(url=x, #httr::progress(),
-                  httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T));
+                  httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T))
         utils::setTxtProgressBar(pb, i)
       }
       )
@@ -104,7 +103,7 @@ if( x < 1992){
       # read files and pile them up
       files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))
       files <- paste0(tempdir(),"/",files)
-      files <- lapply(X=files, FUN= readr::read_rds)
+      files <- lapply(X=files, FUN= sf::st_read, quiet=T)
       shape <- do.call('rbind', files)
       return(shape)
     }
@@ -120,19 +119,18 @@ if( x < 1992){
 
 
     # download files
-    temps <- paste0(tempdir(),"/", unlist(lapply(strsplit(filesD,"/"),tail,n=1L)))
-    httr::GET(url=filesD, httr::write_disk(temps, overwrite = T))
+    temps <- download_gpkg(filesD)
 
     # read sf
-    shape <- readr::read_rds(temps)
+    shape <- sf::st_read(temps, quiet=T)
 
     if(nchar(code_state)==2){
       return(shape)
 
-    } else if(code_state %in% shape$code_state){
-      x <- code_state
-      shape <- subset(shape, code_state==x)
-      return(shape)
+    # } else if(code_state %in% shape$code_state){
+    #   x <- code_state
+    #   shape <- subset(shape, code_state==x)
+    #   return(shape)
 
     } else{
       stop("Error: Invalid Value to argument code_state.")

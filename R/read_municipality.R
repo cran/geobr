@@ -6,6 +6,7 @@
 #' @param year Year of the data (defaults to 2010)
 #' @param code_muni The 7-digit code of a municipality. If the two-digit code or a two-letter uppercase abbreviation of
 #'  a state is passed, (e.g. 33 or "RJ") the function will load all municipalities of that state. If code_muni="all", all municipalities of the country will be loaded.
+#' @param tp Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)
 #' @export
 #' @family general area functions
 #' @examples \donttest{
@@ -24,24 +25,23 @@
 #'
 #'}
 
-read_municipality <- function(code_muni, year=NULL){
+read_municipality <- function(code_muni="all", year=NULL, tp="simplified"){
 
 # 1.1 Verify year input
   if (is.null(year)){ year <- 2010}
 
-
-
-
 # Get metadata with data addresses
   metadata <- download_metadata()
 
-
 # Select metadata geo
-  temp_meta <- subset(metadata, geo=="municipio")
+  temp_meta <- subset(metadata, geo=="municipality")
 
-  # 2.1 Verify year input
+# Select data type
+  temp_meta <- select_data_type(temp_meta, tp)
 
 
+
+# 2.1 Verify year input
 
   # Test if code_muni input is null
   if(!(year %in% temp_meta$year)){ stop(paste0("Error: Invalid Value to argument 'year'. It must be one of the following: ",
@@ -62,11 +62,10 @@ read_municipality <- function(code_muni, year=NULL){
     filesD <- as.character(temp_meta$download_path)
 
     # download files
-    temps <- paste0(tempdir(),"/", unlist(lapply(strsplit(filesD,"/"),tail,n=1L)))
-    httr::GET(url=filesD, httr::progress(), httr::write_disk(temps, overwrite = T))
+    temps <- download_gpkg(filesD)
 
     # read sf
-    temp_sf <- readr::read_rds(temps)
+    temp_sf <- sf::st_read(temps, quiet=T)
 
     return(temp_sf)
     } else {
@@ -75,9 +74,6 @@ read_municipality <- function(code_muni, year=NULL){
 # BLOCK 2.2 From 2000 onwards  ----------------------------
 
 # 2.2 Verify code_muni Input
-
-  # Test if code_muni input is null
-    if(is.null(code_muni)){ stop("Value to argument 'code_muni' cannot be NULL") }
 
   # if code_muni=="all", read the entire country
     if(code_muni=="all"){ message("Loading data for the whole country. This might take a few minutes.\n")
@@ -91,9 +87,9 @@ read_municipality <- function(code_muni, year=NULL){
 
       # download files
       lapply(X=filesD, function(x){
-        i <- match(c(x),filesD);
+        i <- match(c(x),filesD)
         httr::GET(url=x, #httr::progress(),
-                  httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T));
+                  httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T))
         utils::setTxtProgressBar(pb, i)
       }
       )
@@ -103,7 +99,7 @@ read_municipality <- function(code_muni, year=NULL){
       # read files and pile them up
       files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))
       files <- paste0(tempdir(),"/",files)
-      files <- lapply(X=files, FUN= readr::read_rds)
+      files <- lapply(X=files, FUN= sf::st_read, quiet=T)
       sf <- do.call('rbind', files)
       return(sf)
     }
@@ -123,7 +119,7 @@ read_municipality <- function(code_muni, year=NULL){
     httr::GET(url=filesD,  httr::progress(), httr::write_disk(temps, overwrite = T))
 
     # read sf
-    sf <- readr::read_rds(temps)
+    sf <- sf::st_read(temps, quiet=T)
 
       if(nchar(code_muni)==2){
         return(sf)

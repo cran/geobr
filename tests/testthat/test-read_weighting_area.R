@@ -1,10 +1,13 @@
-context("Read")
+context("read_weighting_area")
+
+
+# skip tests because they take too much time
+testthat::skip_on_cran()
+testthat::skip_on_travis()
+# skip_if(Sys.getenv("TEST_ONE") != "")
+
 
 test_that("read_weighting_area", {
-
-  # skip tests because they take too much time
-  skip_on_cran()
-  skip_on_travis()
 
   # read data
 
@@ -44,17 +47,13 @@ test_that("read_weighting_area", {
   expect_equal(test_abrev$code_weighting %>% length(), 8)
 
   # check projection
-  expect_equal(sf::st_crs(test_abrev)[[2]], "+proj=longlat +ellps=GRS80 +no_defs")
+  expect_equal(sf::st_crs(test_abrev)[[2]], "+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs")
 
 })
 
 
 # ERRORS
 test_that("read_weighting_area", {
-
-  # skip tests because they take too much time
-  skip_on_cran()
-  skip_on_travis()
 
   # Wrong year and code
   expect_error(read_weighting_area(code_weighting=9999999, year=9999999))

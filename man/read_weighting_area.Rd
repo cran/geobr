@@ -4,7 +4,7 @@
 \alias{read_weighting_area}
 \title{Download shape files of Census Weighting Areas (area de ponderacao) of the Brazilian Population Census.}
 \usage{
-read_weighting_area(code_weighting, year = NULL)
+read_weighting_area(code_weighting = "all", year = NULL, tp = "simplified")
 }
 \arguments{
 \item{code_weighting}{The 7-digit code of a Municipality. If the two-digit code or a two-letter uppercase abbreviation of
@@ -12,6 +12,8 @@ a state is passed, (e.g. 33 or "RJ") the function will load all weighting areas 
 all weighting areas of the country are loaded.}
 
 \item{year}{Year of the data (defaults to 2010)}
+
+\item{tp}{Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)}
 }
 \description{
 Only 2010 data is currently available.
@@ -25,7 +27,7 @@ library(geobr)
   w <- read_weighting_area(code_weighting=5201108005004, year=2010)
 
 # Read all weighting areas of a state at a given year
-  w <- read_weighting_area(code_weighting=53, year=2010); # or
+  w <- read_weighting_area(code_weighting=53, year=2010) # or
   w <- read_weighting_area(code_weighting="DF", year=2010)
   plot(w)
 
@@ -43,18 +45,20 @@ library(geobr)
 
 }
 \seealso{
-Other general area functions: \code{\link{read_amazon}},
-  \code{\link{read_biomes}},
-  \code{\link{read_census_tract}},
-  \code{\link{read_conservation_units}},
-  \code{\link{read_country}},
-  \code{\link{read_immediate_region}},
-  \code{\link{read_intermediate_region}},
-  \code{\link{read_meso_region}},
-  \code{\link{read_micro_region}},
-  \code{\link{read_municipality}},
-  \code{\link{read_region}}, \code{\link{read_semiarid}},
-  \code{\link{read_state}},
-  \code{\link{read_statistical_grid}}
+Other general area functions: 
+\code{\link{read_amazon}()},
+\code{\link{read_biomes}()},
+\code{\link{read_census_tract}()},
+\code{\link{read_conservation_units}()},
+\code{\link{read_country}()},
+\code{\link{read_immediate_region}()},
+\code{\link{read_intermediate_region}()},
+\code{\link{read_meso_region}()},
+\code{\link{read_micro_region}()},
+\code{\link{read_municipality}()},
+\code{\link{read_region}()},
+\code{\link{read_semiarid}()},
+\code{\link{read_state}()},
+\code{\link{read_statistical_grid}()}
 }
 \concept{general area functions}

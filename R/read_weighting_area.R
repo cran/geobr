@@ -6,6 +6,7 @@
 #'  a state is passed, (e.g. 33 or "RJ") the function will load all weighting areas of that state. If code_weighting="all",
 #'  all weighting areas of the country are loaded.
 #' @param year Year of the data (defaults to 2010)
+#' @param tp Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)
 #' @export
 #' @family general area functions
 #' @examples \donttest{
@@ -16,7 +17,7 @@
 #'   w <- read_weighting_area(code_weighting=5201108005004, year=2010)
 #'
 #' # Read all weighting areas of a state at a given year
-#'   w <- read_weighting_area(code_weighting=53, year=2010); # or
+#'   w <- read_weighting_area(code_weighting=53, year=2010) # or
 #'   w <- read_weighting_area(code_weighting="DF", year=2010)
 #'   plot(w)
 #'
@@ -32,14 +33,17 @@
 #'
 #'
 #'
-read_weighting_area <- function(code_weighting, year = NULL){ #code_weighting=1400100
+read_weighting_area <- function(code_weighting="all", year = NULL, tp="simplified"){
 
   # Get metadata with data addresses
   metadata <- download_metadata()
 
 
   # Select geo
-    temp_meta <- subset(metadata, geo=="area_ponderacao")
+    temp_meta <- subset(metadata, geo=="weighting_area")
+
+  # Select data type
+    temp_meta <- select_data_type(temp_meta, tp)
 
     # Verify year input
     if (is.null(year)){ message("Using data from year 2010\n")
@@ -51,10 +55,8 @@ read_weighting_area <- function(code_weighting, year = NULL){ #code_weighting=14
                          paste(unique(temp_meta$year),collapse = " ")))
     }
 
-  # Verify code_weighting input
 
-  # Test if code_weighting input is null
-  if(is.null(code_weighting)){ stop("Value to argument 'code_weighting' cannot be NULL") }
+# Verify code_weighting input
 
   # if code_weighting=="all", read the entire country
     if(code_weighting=="all"){ message("Loading data for the whole country. This might take a few minutes.\n")
@@ -68,9 +70,9 @@ read_weighting_area <- function(code_weighting, year = NULL){ #code_weighting=14
 
         # download files
         lapply(X=filesD, function(x){
-          i <- match(c(x),filesD);
+          i <- match(c(x),filesD)
           httr::GET(url=x, #httr::progress(),
-                    httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T));
+                    httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T))
           utils::setTxtProgressBar(pb, i)
         }
         )
@@ -80,7 +82,7 @@ read_weighting_area <- function(code_weighting, year = NULL){ #code_weighting=14
         # read files and pile them up
         files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))
         files <- paste0(tempdir(),"/",files)
-        files <- lapply(X=files, FUN= readr::read_rds)
+        files <- lapply(X=files, FUN= sf::st_read, quiet=T)
         shape <- do.call('rbind', files)
         return(shape)
       }
@@ -95,11 +97,10 @@ read_weighting_area <- function(code_weighting, year = NULL){ #code_weighting=14
       if (is.character(code_weighting)){ filesD <- as.character(subset(temp_meta, code_abrev==substr(code_weighting, 1, 2))$download_path) }
 
     # download files
-      temps <- paste0(tempdir(),"/",unlist(lapply(strsplit(filesD,"/"),tail,n=1L)))
-      httr::GET(url=filesD, httr::write_disk(temps, overwrite = T))
+    temps <- download_gpkg(filesD)
 
     # read sf
-      shape <- readr::read_rds(temps)
+      shape <- sf::st_read(temps, quiet=T)
 
     # return whole state
     if(nchar(code_weighting)==2){

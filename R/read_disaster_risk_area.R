@@ -9,6 +9,7 @@
 #' at https://www.ibge.gov.br/geociencias/organizacao-do-territorio/tipologias-do-territorio/21538-populacao-em-areas-de-risco-no-brasil.html
 #'
 #' @param year A year number in YYYY format.
+#' @param tp Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)#' @export
 #' @export
 #' @examples \donttest{
 #'
@@ -21,14 +22,16 @@
 #'
 #'
 
-read_disaster_risk_area <- function(year){
+read_disaster_risk_area <- function(year, tp="simplified"){
 
   # Get metadata with data addresses
   metadata <- download_metadata()
 
-
   # Select geo
   temp_meta <- subset(metadata, geo=="disaster_risk_area")
+
+  # Select data type
+  temp_meta <- select_data_type(temp_meta, tp)
 
   # Verify year input
   if(is.null(year)){ stop(paste0("Error: Invalid Value to argument 'year'. It must be one of the following: ",
@@ -45,10 +48,9 @@ read_disaster_risk_area <- function(year){
   filesD <- as.character(temp_meta$download_path)
 
   # download files
-  temps <- paste0(tempdir(),"/", unlist(lapply(strsplit(filesD,"/"),tail,n=1L)))
-  httr::GET(url=filesD, httr::progress(), httr::write_disk(temps, overwrite = T))
+  temps <- download_gpkg(filesD)
 
   # read sf
-  temp_sf <- readr::read_rds(temps)
+  temp_sf <- sf::st_read(temps, quiet=T)
   return(temp_sf)
 }

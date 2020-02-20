@@ -4,6 +4,7 @@
 #' data comes from the Brazilian Institute of Geography and Statistics (IBGE) and can be found at https://www.ibge.gov.br/geociencias/cartas-e-mapas/mapas-regionais/15974-semiarido-brasileiro.html?=&t=downloads
 #'
 #' @param year A date number in YYYY format (defaults to 2017)
+#' @param tp Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)
 #' @export
 #' @family general area functions
 #' @examples \donttest{
@@ -14,15 +15,16 @@
 #'   a <- read_semiarid(year=2017)
 #'}
 #'
-read_semiarid <- function(year=NULL){
+read_semiarid <- function(year=NULL, tp="simplified"){
 
   # Get metadata with data addresses
-  metadata <- geobr::download_metadata()
-
+  metadata <- download_metadata()
 
   # Select geo
   temp_meta <- subset(metadata, geo=="semiarid")
 
+  # Select data type
+  temp_meta <- select_data_type(temp_meta, tp)
 
   # 1.1 Verify year input
   if (is.null(year)){ year <- 2017}
@@ -45,10 +47,9 @@ read_semiarid <- function(year=NULL){
   # filesD <- as.character(temp_meta$download_path)
 
   # download files
-  temps <- paste0(tempdir(),"/", unlist(lapply(strsplit(filesD,"/"),tail,n=1L)))
-  httr::GET(url=filesD, httr::progress(), httr::write_disk(temps, overwrite = T))
+  temps <- download_gpkg(filesD)
 
   # read sf
-  temp_sf <- readr::read_rds(temps)
+  temp_sf <- sf::st_read(temps, quiet=T)
   return(temp_sf)
 }

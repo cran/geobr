@@ -1,10 +1,12 @@
-context("Read")
+context("read_micro_region")
+
+# skip tests because they take too much time
+testthat::skip_on_cran()
+# testthat::skip_on_travis()
+# skip_if(Sys.getenv("TEST_ONE") != "")
+
 
 test_that("read_micro_region", {
-
-  # skip tests because they take too much time
-  skip_on_cran()
-  skip_on_travis()
 
   # read data
   test_micro_code <- read_micro_region(code_micro=11008, year=2010)
@@ -33,7 +35,7 @@ test_that("read_micro_region", {
   expect_equal(test_all$code_micro %>% length(), 557)
 
   # check projection
-  expect_equal(sf::st_crs(test_all)[[2]], "+proj=longlat +ellps=GRS80 +no_defs")
+  expect_equal(sf::st_crs(test_all)[[2]], "+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs")
 
 })
 
@@ -41,10 +43,6 @@ test_that("read_micro_region", {
 
 # ERRORS
 test_that("read_micro_region", {
-
-  # skip tests because they take too much time
-  skip_on_cran()
-  skip_on_travis()
 
   # Wrong year and code
   expect_error(read_micro_region(code_micro=9999999, year=9999999))

@@ -1,11 +1,12 @@
-context("Read")
+context("read_state")
+
+# skip tests because they take too much time
+testthat::skip_on_cran()
+# testthat::skip_on_travis()
+# skip_if(Sys.getenv("TEST_ONE") != "")
 
 
 test_that("read_state", {
-
-  # skip tests because they take too much time
-  skip_on_cran()
-  skip_on_travis()
 
   # read data
   test_state_abrev <- read_state(code_state="AC", year=2010)
@@ -36,8 +37,7 @@ test_that("read_state", {
   expect_equal(test_all3$name_state %>% length(), 21)
 
   # check projection
-  expect_equal(sf::st_crs(test_all)[[2]], "+proj=longlat +ellps=GRS80 +no_defs")
-#  expect_equal(sf::st_crs(test_all3)[[2]], "+proj=longlat +ellps=GRS80 +no_defs")
+  expect_equal(sf::st_crs(test_all)[[2]], "+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs")
 
 })
 
@@ -46,10 +46,6 @@ test_that("read_state", {
 
 # ERRORS
 test_that("read_state", {
-
-  # skip tests because they take too much time
-  skip_on_cran()
-  skip_on_travis()
 
   # Wrong year and code
   expect_error(read_state(code_state=9999999, year=9999999))

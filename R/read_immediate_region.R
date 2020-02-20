@@ -7,6 +7,7 @@
 #' @param code_immediate 6-digit code of an immediate region. If the two-digit code or a two-letter uppercase abbreviation of
 #'  a state is passed, (e.g. 33 or "RJ") the function will load all immediate regions of that state. If code_immediate="all",
 #'  all immediate regions of the country are loaded (defaults to "all").
+#' @param tp Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)
 #' @export
 #' @family general area functions
 #' @examples \donttest{
@@ -26,13 +27,16 @@
 #' }
 #'
 #'
-read_immediate_region <- function(code_immediate= NULL, year = NULL){
+read_immediate_region <- function(code_immediate="all", year = NULL, tp="simplified"){
 
   # Get metadata with data addresses
-  metadata <- geobr::download_metadata()
+  metadata <- download_metadata()
 
   # Select geo
   temp_meta <- subset(metadata, geo=="immediate_regions")
+
+  # Select data type
+  temp_meta <- select_data_type(temp_meta, tp)
 
   # 1.1 Verify year input
   if (is.null(year)){ year <- 2017
@@ -50,17 +54,15 @@ read_immediate_region <- function(code_immediate= NULL, year = NULL){
   filesD <- as.character(temp_meta$download_path)
 
   # download files
-  temps <- paste0(tempdir(),"/", unlist(lapply(strsplit(filesD,"/"),tail,n=1L)))
-  httr::GET(url=filesD, httr::progress(), httr::write_disk(temps, overwrite = T))
+  temps <- download_gpkg(filesD)
 
   # read sf
-  temp_sf <- readr::read_rds(temps)
+  temp_sf <- sf::st_read(temps, quiet=T)
 
   }
 
-  if(is.null(code_immediate)){ message("Loading data for the whole country. This might take a few minutes.\n")
-
-    } else if(code_immediate=="all"){ message("Loading data for the whole country. This might take a few minutes.\n")
+  # check code_immediate input
+  if(code_immediate=="all"){ message("Loading data for the whole country. This might take a few minutes.\n")
 
   # abbrev_state
   } else if(code_immediate %in% temp_sf$abbrev_state){

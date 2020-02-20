@@ -6,6 +6,7 @@
 #' @param code_micro 5-digit code of a micro region. If the two-digit code or a two-letter uppercase abbreviation of
 #'  a state is passed, (e.g. 33 or "RJ") the function will load all micro regions of that state. If code_micro="all",
 #'  all micro regions of the country are loaded.
+#' @param tp Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)
 #' @export
 #' @family general area functions
 #' @examples \donttest{
@@ -25,16 +26,17 @@
 #'
 #'
 
-read_micro_region <- function(code_micro, year=NULL){
+read_micro_region <- function(code_micro="all", year=NULL, tp="simplified"){
 
 
-  # Get metadata with data addresses
+  # Get metadata
   metadata <- download_metadata()
 
-
   # Select geo
-  temp_meta <- subset(metadata, geo=="micro_regiao")
+  temp_meta <- subset(metadata, geo=="micro_region")
 
+  # Select data type
+  temp_meta <- select_data_type(temp_meta, tp)
 
   # Verify year input
   if (is.null(year)){ message("Using data from year 2010\n")
@@ -49,9 +51,6 @@ read_micro_region <- function(code_micro, year=NULL){
 
   # Verify code_micro input
 
-  # Test if code_micro input is null
-  if(is.null(code_micro)){ stop("Value to argument 'code_micro' cannot be NULL") }
-
   # if code_micro=="all", read the entire country
   if(code_micro=="all"){ message("Loading data for the whole country. This might take a few minutes.\n")
 
@@ -64,9 +63,9 @@ read_micro_region <- function(code_micro, year=NULL){
 
     # download files
     lapply(X=filesD, function(x){
-      i <- match(c(x),filesD);
+      i <- match(c(x),filesD)
       httr::GET(url=x, #httr::progress(),
-                httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T));
+                httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T))
       utils::setTxtProgressBar(pb, i)
     }
     )
@@ -76,7 +75,7 @@ read_micro_region <- function(code_micro, year=NULL){
     # read files and pile them up
     files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))
     files <- paste0(tempdir(),"/",files)
-    files <- lapply(X=files, FUN= readr::read_rds)
+    files <- lapply(X=files, FUN= sf::st_read, quiet=T)
     shape <- do.call('rbind', files)
     return(shape)
   }
@@ -93,11 +92,10 @@ read_micro_region <- function(code_micro, year=NULL){
 
 
     # download files
-    temps <- paste0(tempdir(),"/", unlist(lapply(strsplit(filesD,"/"),tail,n=1L)))
-    httr::GET(url=filesD, httr::write_disk(temps, overwrite = T))
+    temps <- download_gpkg(filesD)
 
     # read sf
-    shape <- readr::read_rds(temps)
+    shape <- sf::st_read(temps, quiet=T)
 
     if(nchar(code_micro)==2){
       return(shape)

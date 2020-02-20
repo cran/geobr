@@ -5,6 +5,7 @@
 #'  all census tracts of the country are loaded.
 #' @param year Year of the data (defaults to 2010)
 #' @param zone "urban" or "rural" census tracts come in separate files in the year 2000 (defaults to "urban")
+#' @param tp Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)
 #' @export
 #' @family general area functions
 #' @examples \donttest{
@@ -15,7 +16,7 @@
 #'   c <- read_census_tract(code_tract=5201108, year=2000, zone="rural")
 #'
 #' # Read all census tracts of a state at a given year
-#'   c <- read_census_tract(code_tract=53, year=2010); # or
+#'   c <- read_census_tract(code_tract=53, year=2010) # or
 #'   c <- read_census_tract(code_tract="DF", year=2010)
 #'   plot(c)
 #'
@@ -29,18 +30,16 @@
 #' }
 #'
 #'
-#'
-#'
-read_census_tract <- function(code_tract, year = NULL, zone = "urban"){
+read_census_tract <- function(code_tract, year = NULL, zone = "urban", tp="simplified"){
 
   # Get metadata with data addresses
   metadata <- download_metadata()
 
-
   # Select geo
-  temp_meta <- subset(metadata, geo=="setor_censitario")
+  temp_meta <- subset(metadata, geo=="census_tract")
 
-
+  # Select data type
+  temp_meta <- select_data_type(temp_meta, tp)
 
   # Verify year input
   if (is.null(year)){ message("Using data from year 2010\n")
@@ -78,9 +77,9 @@ read_census_tract <- function(code_tract, year = NULL, zone = "urban"){
 
       # download files
       lapply(X=filesD, function(x){
-        i <- match(c(x),filesD);
+        i <- match(c(x),filesD)
         httr::GET(url=x, #httr::progress(),
-                  httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T));
+                  httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T))
         utils::setTxtProgressBar(pb, i)
       }
       )
@@ -90,7 +89,7 @@ read_census_tract <- function(code_tract, year = NULL, zone = "urban"){
       # read files and pile them up
       files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))
       files <- paste0(tempdir(),"/",files)
-      files <- lapply(X=files, FUN= readr::read_rds)
+      files <- lapply(X=files, FUN= sf::st_read, quiet=T)
       sf <- do.call('rbind', files)
       return(sf)
     }
@@ -122,11 +121,10 @@ read_census_tract <- function(code_tract, year = NULL, zone = "urban"){
 
         }
       # download files
-      temps <- paste0(tempdir(),"/",unlist(lapply(strsplit(filesD,"/"),tail,n=1L)))
-      httr::GET(url=filesD,  httr::progress(), httr::write_disk(temps, overwrite = T))
+      temps <- download_gpkg(filesD)
 
       # read sf
-      sf <- readr::read_rds(temps)
+      sf <- sf::st_read(temps, quiet=T)
 
       if(nchar(code_tract)==2){
         return(sf)

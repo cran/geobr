@@ -1,10 +1,12 @@
-context("Read")
+context("read_municipality")
+
+# skip tests because they take too much time
+testthat::skip_on_cran()
+ testthat::skip_on_travis()
+# skip_if(Sys.getenv("TEST_ONE") != "")
+
 
 test_that("read_municipality", {
-
-  # skip tests because they take too much time
-  skip_on_cran()
-  skip_on_travis()
 
   # read data
   test_code_1991 <- read_municipality(code_muni=1200179, year=1991)
@@ -38,18 +40,13 @@ test_that("read_municipality", {
   expect_true(is(test_all2_2010, "sf"))
 
   # check projection
-  expect_equal(sf::st_crs(test_code_2010)[[2]], "+proj=longlat +ellps=GRS80 +no_defs")
-  # expect_equal(sf::st_crs(test_code_1991)[[2]], "+proj=longlat +ellps=GRS80 +no_defs")
+  expect_equal(sf::st_crs(test_code_2010)[[2]], "+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs")
 
 })
 
 
 # ERRORS
 test_that("read_municipality", {
-
-  # skip tests because they take too much time
-  skip_on_cran()
-  skip_on_travis()
 
   # Wrong year and code
   expect_error(read_municipality(code_muni=9999999, year=9999999))

@@ -60,9 +60,9 @@ read_statistical_grid <- function(code_grid, year=NULL){ # nocov start
 
       # download files
       lapply(X=filesD, function(x){
-        i <- match(c(x),filesD);
+        i <- match(c(x),filesD)
         httr::GET(url=x, #httr::progress(),
-                  httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T));
+                  httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T))
         utils::setTxtProgressBar(pb, i)
       }
       )
@@ -72,7 +72,7 @@ read_statistical_grid <- function(code_grid, year=NULL){ # nocov start
       # read files and pile them up
       files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))
       files <- paste0(tempdir(),"/",files)
-      files <- lapply(X=files, FUN= readr::read_rds)
+      files <- lapply(X=files, FUN= sf::st_read, quiet=T)
       shape <- do.call('rbind', files)
       return(shape)
     }
@@ -109,7 +109,7 @@ read_statistical_grid <- function(code_grid, year=NULL){ # nocov start
       # read files and pile them up
       files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))
       files <- paste0(tempdir(),"/",files)
-      files <- lapply(X=files, FUN= readr::read_rds)
+      files <- lapply(X=files, FUN= sf::st_read, quiet=T)
       shape <- do.call('rbind', files)
       return(shape)
       }
@@ -124,11 +124,10 @@ read_statistical_grid <- function(code_grid, year=NULL){ # nocov start
     filesD <- as.character(subset(temp_meta, code== code_grid)$download_path)
 
     # download files
-    temps <- paste0(tempdir(),"/",unlist(lapply(strsplit(filesD,"/"),tail,n=1L)))
-    httr::GET(url=filesD, httr::write_disk(temps, overwrite = T))
+    temps <- download_gpkg(filesD)
 
     # read sf
-    shape <- readr::read_rds(temps)
+    shape <- sf::st_read(temps, quiet=T)
     return(shape)
   }
 } # nocov end

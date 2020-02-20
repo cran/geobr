@@ -7,6 +7,7 @@
 #'
 #'
 #' @param year A year number in YYYY format (defaults to 2015)
+#' @param tp Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)
 #' @export
 #' @examples \donttest{
 #'
@@ -18,14 +19,16 @@
 #' }
 #'
 #'
-read_urban_area <- function(year=NULL){
+read_urban_area <- function(year=NULL, tp="simplified"){
 
   # Get metadata with data addresses
   metadata <- download_metadata()
 
-
   # Select geo
   temp_meta <- subset(metadata, geo=="urban_area")
+
+  # Select data type
+  temp_meta <- select_data_type(temp_meta, tp)
 
   # Verify year input
   if (is.null(year)){ message("Using latest data available, from year 2015\n")
@@ -43,11 +46,10 @@ read_urban_area <- function(year=NULL){
   filesD <- as.character(temp_meta$download_path)
 
   # download files
-  temps <- paste0(tempdir(),"/", unlist(lapply(strsplit(filesD,"/"),tail,n=1L)))
-  httr::GET(url=filesD, httr::progress(), httr::write_disk(temps, overwrite = T))
+  temps <- download_gpkg(filesD)
 
 
   # read sf
-  temp_sf <- readr::read_rds(temps)
+  temp_sf <- sf::st_read(temps, quiet=T)
   return(temp_sf)
 }

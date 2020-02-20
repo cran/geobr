@@ -4,7 +4,7 @@
 \alias{read_immediate_region}
 \title{Download shape files of Brazil's Immediate Geographic Areas as sf objects}
 \usage{
-read_immediate_region(code_immediate = NULL, year = NULL)
+read_immediate_region(code_immediate = "all", year = NULL, tp = "simplified")
 }
 \arguments{
 \item{code_immediate}{6-digit code of an immediate region. If the two-digit code or a two-letter uppercase abbreviation of
@@ -12,6 +12,8 @@ a state is passed, (e.g. 33 or "RJ") the function will load all immediate region
 all immediate regions of the country are loaded (defaults to "all").}
 
 \item{year}{A date number in YYYY format (defaults to 2017)}
+
+\item{tp}{Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)}
 }
 \description{
 The Immediate Geographic Areas are part of the geographic division of Brazil created in 2017 by IBGE to
@@ -37,18 +39,20 @@ library(geobr)
 
 }
 \seealso{
-Other general area functions: \code{\link{read_amazon}},
-  \code{\link{read_biomes}},
-  \code{\link{read_census_tract}},
-  \code{\link{read_conservation_units}},
-  \code{\link{read_country}},
-  \code{\link{read_intermediate_region}},
-  \code{\link{read_meso_region}},
-  \code{\link{read_micro_region}},
-  \code{\link{read_municipality}},
-  \code{\link{read_region}}, \code{\link{read_semiarid}},
-  \code{\link{read_state}},
-  \code{\link{read_statistical_grid}},
-  \code{\link{read_weighting_area}}
+Other general area functions: 
+\code{\link{read_amazon}()},
+\code{\link{read_biomes}()},
+\code{\link{read_census_tract}()},
+\code{\link{read_conservation_units}()},
+\code{\link{read_country}()},
+\code{\link{read_intermediate_region}()},
+\code{\link{read_meso_region}()},
+\code{\link{read_micro_region}()},
+\code{\link{read_municipality}()},
+\code{\link{read_region}()},
+\code{\link{read_semiarid}()},
+\code{\link{read_state}()},
+\code{\link{read_statistical_grid}()},
+\code{\link{read_weighting_area}()}
 }
 \concept{general area functions}

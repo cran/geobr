@@ -4,10 +4,12 @@
 \alias{read_biomes}
 \title{Download official data of Brazilian biomes as an sf object.}
 \usage{
-read_biomes(year = NULL)
+read_biomes(year = NULL, tp = "simplified")
 }
 \arguments{
 \item{year}{A date number in YYYY format (defaults to 2019)}
+
+\item{tp}{Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)}
 }
 \description{
 This data set includes  polygons of all biomes present in Brazilian territory and coastal area.
@@ -26,18 +28,20 @@ library(geobr)
 
 }
 \seealso{
-Other general area functions: \code{\link{read_amazon}},
-  \code{\link{read_census_tract}},
-  \code{\link{read_conservation_units}},
-  \code{\link{read_country}},
-  \code{\link{read_immediate_region}},
-  \code{\link{read_intermediate_region}},
-  \code{\link{read_meso_region}},
-  \code{\link{read_micro_region}},
-  \code{\link{read_municipality}},
-  \code{\link{read_region}}, \code{\link{read_semiarid}},
-  \code{\link{read_state}},
-  \code{\link{read_statistical_grid}},
-  \code{\link{read_weighting_area}}
+Other general area functions: 
+\code{\link{read_amazon}()},
+\code{\link{read_census_tract}()},
+\code{\link{read_conservation_units}()},
+\code{\link{read_country}()},
+\code{\link{read_immediate_region}()},
+\code{\link{read_intermediate_region}()},
+\code{\link{read_meso_region}()},
+\code{\link{read_micro_region}()},
+\code{\link{read_municipality}()},
+\code{\link{read_region}()},
+\code{\link{read_semiarid}()},
+\code{\link{read_state}()},
+\code{\link{read_statistical_grid}()},
+\code{\link{read_weighting_area}()}
 }
 \concept{general area functions}
