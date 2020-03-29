@@ -12,7 +12,6 @@ testthat::skip_on_cran()
 test_that("read_semiarid", {
 
   # read data
-  expect_message(read_semiarid(year=NULL))
   test_sf <- read_semiarid(year=2017)
 
   # check sf object
@@ -20,9 +19,6 @@ test_that("read_semiarid", {
 
   # check number of micro
   expect_equal(test_sf %>% length(), 5)
-
-  # check projection
-  expect_equal(sf::st_crs(test_sf)[[2]], "+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs")
 
 })
 
@@ -34,6 +30,5 @@ test_that("read_semiarid", {
 
   # Wrong year
   expect_error(read_semiarid(year=9999999))
-  expect_error(read_semiarid(year="xxx"))
 
 })

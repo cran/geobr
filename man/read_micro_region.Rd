@@ -4,7 +4,13 @@
 \alias{read_micro_region}
 \title{Download shape files of micro region as sf objects}
 \usage{
-read_micro_region(code_micro = "all", year = NULL, tp = "simplified")
+read_micro_region(
+  code_micro = "all",
+  year = 2010,
+  simplified = TRUE,
+  showProgress = TRUE,
+  tp
+)
 }
 \arguments{
 \item{code_micro}{5-digit code of a micro region. If the two-digit code or a two-letter uppercase abbreviation of
@@ -13,13 +19,17 @@ all micro regions of the country are loaded.}
 
 \item{year}{Year of the data (defaults to 2010)}
 
-\item{tp}{Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)}
+\item{simplified}{Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)}
+
+\item{showProgress}{Logical. Defaults to (TRUE) display progress bar}
+
+\item{tp}{Argument deprecated. Please use argument 'simplified'}
 }
 \description{
 Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
 }
 \examples{
-\donttest{
+\dontrun{
 
 library(geobr)
 
@@ -28,7 +38,7 @@ library(geobr)
 
 # Read micro regions of a state at a given year
   micro <- read_micro_region(code_micro=12, year=2017)
-  micro <- read_micro_region(code_meso="AM", year=2000)
+  micro <- read_micro_region(code_micro="AM", year=2000)
 
 # Read all micro regions at a given year
   micro <- read_micro_region(code_micro="all", year=2010)
@@ -47,6 +57,7 @@ Other general area functions:
 \code{\link{read_intermediate_region}()},
 \code{\link{read_meso_region}()},
 \code{\link{read_municipality}()},
+\code{\link{read_neighborhood}()},
 \code{\link{read_region}()},
 \code{\link{read_semiarid}()},
 \code{\link{read_state}()},

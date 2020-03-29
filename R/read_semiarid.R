@@ -4,7 +4,10 @@
 #' data comes from the Brazilian Institute of Geography and Statistics (IBGE) and can be found at https://www.ibge.gov.br/geociencias/cartas-e-mapas/mapas-regionais/15974-semiarido-brasileiro.html?=&t=downloads
 #'
 #' @param year A date number in YYYY format (defaults to 2017)
-#' @param tp Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)
+#' @param simplified Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)
+#' @param showProgress Logical. Defaults to (TRUE) display progress bar
+#' @param tp Argument deprecated. Please use argument 'simplified'
+#'
 #' @export
 #' @family general area functions
 #' @examples \donttest{
@@ -15,41 +18,19 @@
 #'   a <- read_semiarid(year=2017)
 #'}
 #'
-read_semiarid <- function(year=NULL, tp="simplified"){
+read_semiarid <- function(year=2017, simplified=TRUE, showProgress=TRUE, tp){
 
-  # Get metadata with data addresses
-  metadata <- download_metadata()
+  # deprecated 'tp' argument
+  if (!missing("tp")){stop(" 'tp' argument deprecated. Please use argument 'simplified' TRUE or FALSE")}
 
-  # Select geo
-  temp_meta <- subset(metadata, geo=="semiarid")
+  # Get metadata with data url addresses
+  temp_meta <- select_metadata(geography="semiarid", year=year, simplified=simplified)
 
-  # Select data type
-  temp_meta <- select_data_type(temp_meta, tp)
-
-  # 1.1 Verify year input
-  if (is.null(year)){ year <- 2017}
-
-  if(!(year %in% temp_meta$year)){ stop(paste0("Error: Invalid Value to argument 'year'. It must be one of the following: ",
-                                               paste(unique(temp_meta$year),collapse = " ")))
-  }
-
-  message(paste0("Using data from year ", year))
-
-  x<-year
-
-  filesD <- as.character(subset(temp_meta, year==x)$download_path)
-
-  # # Select metadata year
-  # x <- year
-  # temp_meta <- subset(temp_meta, year==x)
-
-  # list paths of files to download
-  # filesD <- as.character(temp_meta$download_path)
+  #list paths of files to download
+  file_url <- as.character(temp_meta$download_path)
 
   # download files
-  temps <- download_gpkg(filesD)
-
-  # read sf
-  temp_sf <- sf::st_read(temps, quiet=T)
+  temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
   return(temp_sf)
+
 }

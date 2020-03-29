@@ -4,12 +4,16 @@
 \alias{read_metro_area}
 \title{Download shape files of official metropolitan areas in Brazil as an sf object.}
 \usage{
-read_metro_area(year, tp = "simplified")
+read_metro_area(year = 2018, simplified = TRUE, showProgress = TRUE, tp)
 }
 \arguments{
-\item{year}{A year number in YYYY format}
+\item{year}{A year number in YYYY format (defaults to 2018)}
 
-\item{tp}{Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)}
+\item{simplified}{Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)}
+
+\item{showProgress}{Logical. Defaults to (TRUE) display progress bar}
+
+\item{tp}{Argument deprecated. Please use argument 'simplified'}
 }
 \description{
 The function returns the shapes of municipalities grouped by their respective metro areas.
@@ -18,7 +22,7 @@ all metropolitan areas in the country according to state legislation in each yea
 by Institute of Geography. Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674).
 }
 \examples{
-\donttest{
+\dontrun{
 
 library(geobr)
 

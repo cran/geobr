@@ -11,20 +11,18 @@ context("read_amazon")
 test_that("read_amazon", {
 
   # read data
-  expect_message(read_amazon(year=NULL))
-  test_sf <- read_amazon(year=2012)
+  test_sf <- read_amazon(showProgress = F)
 
   # check sf object
-  expect_true(is(test_sf, "sf"))
+  testthat::expect_true(is(test_sf, "sf"))
 
   # check number of columns
-  expect_equal(ncol(test_sf), 2)
+  testthat::expect_equal(ncol(test_sf), 1)
 
-  # check projection
-  expect_equal(sf::st_crs(test_sf)[[2]], "+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs")
+  # # check projection
+  # testthat::expect_equal(sf::st_crs(test_sf)$epsg, 4674)
 
 })
-
 
 
 
@@ -32,7 +30,9 @@ test_that("read_amazon", {
 test_that("read_amazon", {
 
   # Wrong year
-  expect_error(read_amazon(year=9999999))
-  expect_error(read_amazon(year="xxx"))
+  testthat::expect_error(read_amazon(year=9999999))
+  testthat::expect_error(read_amazon(year="xxx"))
+  testthat::expect_error(read_amazon(tp="xxx"))
+
 
 })

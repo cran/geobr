@@ -10,25 +10,14 @@ testthat::skip_on_cran()
 test_that("read_intermediate_region", {
 
   # read data
-  expect_message(read_intermediate_region(year=NULL))
-  test_sf <- read_intermediate_region(year=2017)
+  testthat::expect_output( read_intermediate_region() )
+  testthat::expect_output( read_intermediate_region(code_intermediate = 11) )
+  testthat::expect_output( read_intermediate_region(code_intermediate = "AC") )
 
-  test_code_state <- read_intermediate_region(code_intermediate = 11)
-  test_code_state2 <- read_intermediate_region(code_intermediate = "AC")
+  test_code_muni <- read_intermediate_region(code_intermediate =  1201)
 
-
-  # check sf object
-  expect_true(is(test_sf, "sf"))
-  expect_true(is(test_code_state, "sf"))
-  expect_true(is(test_code_state2, "sf"))
-
-  # check number of micro
-  expect_equal(test_sf %>% length(), 8)
-  expect_equal(test_code_state %>% length(), 8)
-  expect_equal(test_code_state2 %>% length(), 8)
-
-  # check projection
-  expect_equal(sf::st_crs(test_sf)[[2]], "+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs")
+  # check number of rows
+  testthat::expect_equal(nrow(test_code_muni), 1)
 
 })
 
@@ -38,14 +27,15 @@ test_that("read_intermediate_region", {
 # ERRORS and messagens  -----------------------
 test_that("read_intermediate_region", {
 
+
   # Wrong year
-  expect_error(read_intermediate_region(year = 9999999))
-  expect_error(read_intermediate_region(year = "xxx"))
+  testthat::expect_error(read_intermediate_region(year = 9999999))
+  testthat::expect_error(read_intermediate_region(year = "xxx"))
+  testthat::expect_error(read_intermediate_region(code_intermediate=5201108312313213))
 
 
-
-  # wrong year and code_immediate
-  expect_error(read_intermediate_region(code_intermediate = "xxxx", year=9999999))
-  expect_error(read_intermediate_region(code_intermediate = 9999999, year="xxx"))
+  # wrong year and code_intermediate
+  testthat::expect_error(read_intermediate_region(code_intermediate = "xxxx", year=9999999))
+  testthat::expect_error(read_intermediate_region(code_intermediate = 9999999, year="xxx"))
 
 })

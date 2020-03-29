@@ -4,12 +4,21 @@
 \alias{read_disaster_risk_area}
 \title{Download official data of disaster risk areas as an sf object.}
 \usage{
-read_disaster_risk_area(year, tp = "simplified")
+read_disaster_risk_area(
+  year = 2010,
+  simplified = TRUE,
+  showProgress = TRUE,
+  tp
+)
 }
 \arguments{
-\item{year}{A year number in YYYY format.}
+\item{year}{A year number in YYYY format (defaults to 2010)}
 
-\item{tp}{Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)#' @export}
+\item{simplified}{Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)}
+
+\item{showProgress}{Logical. Defaults to (TRUE) display progress bar}
+
+\item{tp}{Argument deprecated. Please use argument 'simplified'}
 }
 \description{
 This function reads the the official data of disaster risk areas in Brazil. It specifically focuses

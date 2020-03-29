@@ -10,16 +10,14 @@ testthat::skip_on_cran()
 test_that("read_indigenous_land", {
 
   # read data
-  test_sf <- read_indigenous_land(date=201907)
+
+  test_sf <- read_indigenous_land()
 
   # check sf object
-  expect_true(is(test_sf, "sf"))
+  testthat::expect_true(is(test_sf, "sf"))
 
   # check number of micro
-  expect_equal(test_sf$code_terrai %>% length(), 615)
-
-  # check projection
-  expect_equal(sf::st_crs(test_sf)[[2]], "+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs")
+  testthat::expect_equal(test_sf$code_terrai %>% length(), 615)
 
 })
 
@@ -29,8 +27,8 @@ test_that("read_indigenous_land", {
 test_that("read_indigenous_land", {
 
   # Wrong date
-  expect_error(read_indigenous_land(date=9999999))
-  expect_error(read_indigenous_land(date="xxx"))
-  expect_error(read_indigenous_land(date=NULL))
+  testthat::expect_error(read_indigenous_land(date=9999999))
+  testthat::expect_error(read_indigenous_land(date="xxx"))
+  testthat::expect_error(read_indigenous_land(date=NULL))
 
 })

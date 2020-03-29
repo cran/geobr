@@ -6,10 +6,13 @@
 #'  a state is passed, (e.g. 33 or "RJ") the function will load all weighting areas of that state. If code_weighting="all",
 #'  all weighting areas of the country are loaded.
 #' @param year Year of the data (defaults to 2010)
-#' @param tp Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)
+#' @param simplified Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)
+#' @param showProgress Logical. Defaults to (TRUE) display progress bar
+#' @param tp Argument deprecated. Please use argument 'simplified'
+#'
 #' @export
 #' @family general area functions
-#' @examples \donttest{
+#' @examples \dontrun{
 #'
 #' library(geobr)
 #'
@@ -33,91 +36,55 @@
 #'
 #'
 #'
-read_weighting_area <- function(code_weighting="all", year = NULL, tp="simplified"){
+read_weighting_area <- function(code_weighting="all", year=2010, simplified=TRUE, showProgress=TRUE, tp){
 
-  # Get metadata with data addresses
-  metadata <- download_metadata()
+  # deprecated 'tp' argument
+  if (!missing("tp")){stop(" 'tp' argument deprecated. Please use argument 'simplified' TRUE or FALSE")}
 
+  # Get metadata with data url addresses
+  temp_meta <- select_metadata(geography="weighting_area", year=year, simplified=simplified)
 
-  # Select geo
-    temp_meta <- subset(metadata, geo=="weighting_area")
-
-  # Select data type
-    temp_meta <- select_data_type(temp_meta, tp)
-
-    # Verify year input
-    if (is.null(year)){ message("Using data from year 2010\n")
-      temp_meta <- subset(temp_meta, year==2010)
-
-    } else if (year %in% temp_meta$year){ temp_meta <- temp_meta[as.vector(temp_meta[,2] == year), ]
-
-    } else { stop(paste0("Error: Invalid Value to argument 'year'. It must be one of the following: ",
-                         paste(unique(temp_meta$year),collapse = " ")))
-    }
-
-
-# Verify code_weighting input
-
-  # if code_weighting=="all", read the entire country
-    if(code_weighting=="all"){ message("Loading data for the whole country. This might take a few minutes.\n")
+  # Verify code_weighting input
+        # if code_weighting=="all", read the entire country
+        if(code_weighting=="all"){ message("Loading data for the whole country. This might take a few minutes.\n")
 
         # list paths of files to download
-        filesD <- as.character(temp_meta$download_path)
-
-        # input for progress bar
-        total <- length(filesD)
-        pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
+        file_url <- as.character(temp_meta$download_path)
 
         # download files
-        lapply(X=filesD, function(x){
-          i <- match(c(x),filesD)
-          httr::GET(url=x, #httr::progress(),
-                    httr::write_disk(paste0(tempdir(),"/", unlist(lapply(strsplit(x,"/"),tail,n=1L))), overwrite = T))
-          utils::setTxtProgressBar(pb, i)
-        }
-        )
-        # closing progress bar
-        close(pb)
+        temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
+        return(temp_sf)
 
-        # read files and pile them up
-        files <- unlist(lapply(strsplit(filesD,"/"), tail, n = 1L))
-        files <- paste0(tempdir(),"/",files)
-        files <- lapply(X=files, FUN= sf::st_read, quiet=T)
-        shape <- do.call('rbind', files)
-        return(shape)
       }
 
   else if( !(substr(x = code_weighting, 1, 2) %in% temp_meta$code) & !(substr(x = code_weighting, 1, 2) %in% temp_meta$code_abrev)){
       stop("Error: Invalid Value to argument code_weighting.")
 
-  }else{
+  } else {
 
     # list paths of files to download
-      if (is.numeric(code_weighting)){ filesD <- as.character(subset(temp_meta, code==substr(code_weighting, 1, 2))$download_path) }
-      if (is.character(code_weighting)){ filesD <- as.character(subset(temp_meta, code_abrev==substr(code_weighting, 1, 2))$download_path) }
+      if (is.numeric(code_weighting)){ file_url <- as.character(subset(temp_meta, code==substr(code_weighting, 1, 2))$download_path) }
+      if (is.character(code_weighting)){ file_url <- as.character(subset(temp_meta, code_abrev==substr(code_weighting, 1, 2))$download_path) }
 
     # download files
-    temps <- download_gpkg(filesD)
-
-    # read sf
-      shape <- sf::st_read(temps, quiet=T)
+    temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
 
     # return whole state
     if(nchar(code_weighting)==2){
-      return(shape)
+      return(temp_sf)
 
     # return municipality
-    } else if(code_weighting %in% shape$code_muni){    # Get weighting area
+    } else if(code_weighting %in% temp_sf$code_muni){    # Get weighting area
       x <- code_weighting
-      shape <- subset(shape, code_muni==x)
-      return(shape)
+      temp_sf <- subset(temp_sf, code_muni==x)
+      return(temp_sf)
 
     # return code weighting area
 
-    } else if(code_weighting %in% shape$code_weighting_area){    # Get weighting area
+    } else if(code_weighting %in% temp_sf$code_weighting_area){    # Get weighting area
       x <- code_weighting
-      shape <- subset(shape, code_weighting_area==x)
-      return(shape)
+      temp_sf <- subset(temp_sf, code_weighting_area==x)
+      return(temp_sf)
 
     } else{
       stop("Error: Invalid Value to argument code_weighting.")

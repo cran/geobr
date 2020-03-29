@@ -7,10 +7,13 @@
 #' @param code_intermediate 4-digit code of an intermediate region. If the two-digit code or a two-letter uppercase abbreviation of
 #'  a state is passed, (e.g. 33 or "RJ") the function will load all intermediate regions of that state. If code_intermediate="all",
 #'  all intermediate regions of the country are loaded (defaults to "all").
-#' @param tp Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)
+#' @param simplified Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)
+#' @param showProgress Logical. Defaults to (TRUE) display progress bar
+#' @param tp Argument deprecated. Please use argument 'simplified'
+#'
 #' @export
 #' @family general area functions
-#' @examples \donttest{
+#' @examples \dontrun{
 #'
 #' library(geobr)
 #'
@@ -27,53 +30,35 @@
 #' }
 #'
 #'
-read_intermediate_region <- function(code_intermediate="all", year = NULL, tp="simplified"){
+read_intermediate_region <- function(code_intermediate="all", year=2017, simplified=TRUE, showProgress=TRUE, tp){
 
-  # Get metadata with data addresses
-  metadata <- download_metadata()
+  # deprecated 'tp' argument
+  if (!missing("tp")){stop(" 'tp' argument deprecated. Please use argument 'simplified' TRUE or FALSE")}
 
-  # Select geo
-  temp_meta <- subset(metadata, geo=="intermediate_regions")
+  # Get metadata with data url addresses
+  temp_meta <- select_metadata(geography="intermediate_regions", year=year, simplified=simplified)
 
-  # Select data type
-  temp_meta <- select_data_type(temp_meta, tp)
+  # list paths of files to download
+  file_url <- as.character(temp_meta$download_path)
 
-  # 1.1 Verify year input
-  if (is.null(year)){ year <- 2017
-  message(paste0("Using data from year ", year))}
+  # download files
+  temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
 
-  if(!(year %in% temp_meta$year)){ stop(paste0("Error: Invalid Value to argument 'year'. It must be one of the following: ",
-                                               paste(unique(temp_meta$year),collapse = " ")))
-  } else {
 
-    # # Select metadata year
-    x <- year
-    temp_meta <- subset(temp_meta, year==x)
-
-    # list paths of files to download
-    filesD <- as.character(temp_meta$download_path)
-
-    # download files
-    temps <- download_gpkg(filesD)
-
-    # read sf
-    temp_sf <- sf::st_read(temps, quiet=T)
-
-  }
-
+  # input "all"
   if(code_intermediate=="all"){ message("Loading data for the whole country. This might take a few minutes.\n")
 
-    # abbrev_state
+  # abbrev_state
   } else if(code_intermediate %in% temp_sf$abbrev_state){
     y <- code_intermediate
     temp_sf <- subset(temp_sf, abbrev_state == y)
 
-    # code_state
+  # code_state
   } else if(code_intermediate %in% temp_sf$code_state){
     y <- code_intermediate
     temp_sf <- subset(temp_sf, code_state == y)
 
-    # code_intermediate
+  # code_intermediate
   } else if(code_intermediate %in% temp_sf$code_intermediate){
     y <- code_intermediate
     temp_sf <- subset(temp_sf, code_intermediate == y)

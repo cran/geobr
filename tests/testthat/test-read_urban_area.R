@@ -12,12 +12,9 @@ testthat::skip_on_cran()
 test_that("read_urban_area", {
 
   # read data and check sf object
-  expect_true(is(read_urban_area(year=NULL), "sf"))
-  test_sf <- read_urban_area(year=2005)
-  expect_true(is(test_sf, "sf"))
+  test_sf <- read_urban_area()
 
-  # check projection
-    expect_equal(sf::st_crs(test_sf)[[2]], "+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs")
+  expect_true(is(test_sf, "sf"))
 
 })
 
@@ -28,6 +25,5 @@ test_that("read_urban_area", {
 
   # Wrong year
   expect_error(read_urban_area(year=9999999))
-  expect_error(read_urban_area(year="xxx"))
 
 })

@@ -1,15 +1,18 @@
-context("Download")
+context("download_metadata")
 
 test_that("download_metadata", {
 
   metadata <- download_metadata()
-
-  expect_true(is(metadata, "data.frame"))
-
-  expect_equal(ncol(metadata), 5)
+  testthat::expect_true(is(metadata, "data.frame"))
+  testthat::expect_equal(ncol(metadata), 5)
 
 })
 
 
+# Expected errors
+test_that("download_metadata", {
 
+    testthat::expect_error( download_metadata("asdasd") )
+  testthat::expect_error( download_metadata( NULL)  )
 
+})

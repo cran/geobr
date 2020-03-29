@@ -4,7 +4,13 @@
 \alias{read_meso_region}
 \title{Download shape files of meso region as sf objects. Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)}
 \usage{
-read_meso_region(code_meso = "all", year = NULL, tp = "simplified")
+read_meso_region(
+  code_meso = "all",
+  year = 2010,
+  simplified = TRUE,
+  showProgress = TRUE,
+  tp
+)
 }
 \arguments{
 \item{code_meso}{The 4-digit code of a meso region. If the two-digit code or a two-letter uppercase abbreviation of
@@ -12,13 +18,17 @@ a state is passed, (e.g. 33 or "RJ") the function will load all meso regions of 
 
 \item{year}{Year of the data (defaults to 2010)}
 
-\item{tp}{Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)}
+\item{simplified}{Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)}
+
+\item{showProgress}{Logical. Defaults to (TRUE) display progress bar}
+
+\item{tp}{Argument deprecated. Please use argument 'simplified'}
 }
 \description{
 Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
 }
 \examples{
-\donttest{
+\dontrun{
 
 library(geobr)
 
@@ -46,6 +56,7 @@ Other general area functions:
 \code{\link{read_intermediate_region}()},
 \code{\link{read_micro_region}()},
 \code{\link{read_municipality}()},
+\code{\link{read_neighborhood}()},
 \code{\link{read_region}()},
 \code{\link{read_semiarid}()},
 \code{\link{read_state}()},

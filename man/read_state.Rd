@@ -4,14 +4,24 @@
 \alias{read_state}
 \title{Download shapefiles of Brazilian states as sf objects.}
 \usage{
-read_state(code_state = "all", year = NULL, tp = "simplified")
+read_state(
+  code_state = "all",
+  year = 2010,
+  simplified = TRUE,
+  showProgress = TRUE,
+  tp
+)
 }
 \arguments{
 \item{code_state}{The two-digit code of a state or a two-letter uppercase abbreviation (e.g. 33 or "RJ"). If code_state="all", all states will be loaded.}
 
 \item{year}{Year of the data (defaults to 2010)}
 
-\item{tp}{Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)}
+\item{simplified}{Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)}
+
+\item{showProgress}{Logical. Defaults to (TRUE) display progress bar}
+
+\item{tp}{Argument deprecated. Please use argument 'simplified'}
 }
 \description{
 Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
@@ -44,6 +54,7 @@ Other general area functions:
 \code{\link{read_meso_region}()},
 \code{\link{read_micro_region}()},
 \code{\link{read_municipality}()},
+\code{\link{read_neighborhood}()},
 \code{\link{read_region}()},
 \code{\link{read_semiarid}()},
 \code{\link{read_statistical_grid}()},

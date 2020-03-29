@@ -13,6 +13,8 @@
 #' with the objective of improving the quality of the data. More information
 #' available at http://dados.gov.br/dataset/cnes
 #'
+#' @param showProgress Logical. Defaults to (TRUE) display progress bar
+#'
 #' @export
 #' @examples \donttest{
 #'
@@ -24,22 +26,16 @@
 #' }
 #'
 
-read_health_facilities <- function(){
+read_health_facilities <- function( showProgress=TRUE ){
 
-  # Get metadata with data addresses
-  metadata <- download_metadata()
-
-  # Select geo
-  temp_meta <- subset(metadata, geo=="health_facilities")
+  # Get metadata with data url addresses
+  temp_meta <- select_metadata(geography="health_facilities", year=2015, simplified=F)
 
   # list paths of files to download
-    filesD <- as.character(temp_meta$download_path)
+    file_url <- as.character(temp_meta$download_path)
 
   # download files
-    temps <- download_gpkg(filesD)
-
-  # read sf
-    temp_sf <- sf::st_read(temps, quiet=T)
+    temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
     return(temp_sf)
 
     }

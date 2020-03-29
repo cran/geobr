@@ -5,7 +5,9 @@
 #' the scale 1:5.000.000. The original data comes from IBGE. More information at https://www.ibge.gov.br/apps/biomas/
 #'
 #' @param year A date number in YYYY format (defaults to 2019)
-#' @param tp Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)
+#' @param simplified Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)
+#' @param showProgress Logical. Defaults to (TRUE) display progress bar
+#' @param tp Argument deprecated. Please use argument 'simplified'
 #'
 #' @export
 #' @family general area functions
@@ -18,39 +20,18 @@
 #'
 #'}
 #'
-read_biomes <- function(year=NULL, tp="simplified"){
+read_biomes <- function(year=2019, simplified=TRUE, showProgress=TRUE, tp){
 
-  # Get metadata with data addresses
-  metadata <- download_metadata()
+  # deprecated 'tp' argument
+  if (!missing("tp")){stop(" 'tp' argument deprecated. Please use argument 'simplified' TRUE or FALSE")}
 
-  # Select geo
-  temp_meta <- subset(metadata, geo=="biomes")
-
-  # Select data type
-  temp_meta <- select_data_type(temp_meta, tp)
-
-
-  # 1.1 Verify year input
-  if (is.null(year)){ year <- 2019}
-
-  if(!(year %in% temp_meta$year)){ stop(paste0("Error: Invalid Value to argument 'year'. It must be one of the following: ",
-                                               paste( unique(temp_meta$year) ,collapse = " ") ))
-  }
-
-  message(paste0("Using data from year ", year))
-
-
-  # Select metadata year
-  x <- year
-  temp_meta <- subset(temp_meta, year==x)
+  # Get metadata with data url addresses
+  temp_meta <- select_metadata(geography="biomes", year=year, simplified=simplified)
 
   # list paths of files to download
-  filesD <- as.character(temp_meta$download_path)
+  file_url <- as.character(temp_meta$download_path)
 
   # download files
-  temps <- download_gpkg(filesD)
-
-  # read sf
-  temp_sf <- sf::st_read(temps, quiet=T)
+  temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
   return(temp_sf)
 }

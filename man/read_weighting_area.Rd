@@ -4,7 +4,13 @@
 \alias{read_weighting_area}
 \title{Download shape files of Census Weighting Areas (area de ponderacao) of the Brazilian Population Census.}
 \usage{
-read_weighting_area(code_weighting = "all", year = NULL, tp = "simplified")
+read_weighting_area(
+  code_weighting = "all",
+  year = 2010,
+  simplified = TRUE,
+  showProgress = TRUE,
+  tp
+)
 }
 \arguments{
 \item{code_weighting}{The 7-digit code of a Municipality. If the two-digit code or a two-letter uppercase abbreviation of
@@ -13,13 +19,17 @@ all weighting areas of the country are loaded.}
 
 \item{year}{Year of the data (defaults to 2010)}
 
-\item{tp}{Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)}
+\item{simplified}{Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)}
+
+\item{showProgress}{Logical. Defaults to (TRUE) display progress bar}
+
+\item{tp}{Argument deprecated. Please use argument 'simplified'}
 }
 \description{
 Only 2010 data is currently available.
 }
 \examples{
-\donttest{
+\dontrun{
 
 library(geobr)
 
@@ -56,6 +66,7 @@ Other general area functions:
 \code{\link{read_meso_region}()},
 \code{\link{read_micro_region}()},
 \code{\link{read_municipality}()},
+\code{\link{read_neighborhood}()},
 \code{\link{read_region}()},
 \code{\link{read_semiarid}()},
 \code{\link{read_state}()},

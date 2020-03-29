@@ -6,8 +6,10 @@
 \usage{
 read_intermediate_region(
   code_intermediate = "all",
-  year = NULL,
-  tp = "simplified"
+  year = 2017,
+  simplified = TRUE,
+  showProgress = TRUE,
+  tp
 )
 }
 \arguments{
@@ -17,14 +19,18 @@ all intermediate regions of the country are loaded (defaults to "all").}
 
 \item{year}{A date number in YYYY format (defaults to 2017)}
 
-\item{tp}{Whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Default)}
+\item{simplified}{Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)}
+
+\item{showProgress}{Logical. Defaults to (TRUE) display progress bar}
+
+\item{tp}{Argument deprecated. Please use argument 'simplified'}
 }
 \description{
 The intermediate Geographic Areas are part of the geographic division of Brazil created in 2017 by IBGE to
 replace the "Meso Regions" division. Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
 }
 \examples{
-\donttest{
+\dontrun{
 
 library(geobr)
 
@@ -53,6 +59,7 @@ Other general area functions:
 \code{\link{read_meso_region}()},
 \code{\link{read_micro_region}()},
 \code{\link{read_municipality}()},
+\code{\link{read_neighborhood}()},
 \code{\link{read_region}()},
 \code{\link{read_semiarid}()},
 \code{\link{read_state}()},
