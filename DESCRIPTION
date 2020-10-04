@@ -1,7 +1,7 @@
 Type: Package
 Package: geobr
 Title: Loads Shapefiles of Official Spatial Data Sets of Brazil
-Version: 1.3
+Version: 1.4
 Authors@R: c(person(given="Rafael H. M.", family="Pereira", email="rafa.pereira.br@gmail.com", role=c("aut", "cre"), comment = c(ORCID = "0000-0003-2125-7465")),
             person(given="Caio Nogueira", family="Goncalves", role=c("aut")),
             person(given="Paulo Henrique Fernandes de", family="Araujo", role=c("ctb")),
@@ -14,23 +14,24 @@ Authors@R: c(person(given="Rafael H. M.", family="Pereira", email="rafa.pereira.
             person(given="Alan da", family="Silva", role="ctb"),
 	          person(given="Carlos Kauê Vieira", family="Braga", role="ctb"),   
             person("Ipea - Institue for Applied Economic Research", role = c("cph", "fnd")))
-Date: 2020-03-25
+Date: 2020-09-28
 URL: https://github.com/ipeaGIT/geobr
 BugReports: https://github.com/ipeaGIT/geobr/issues
-Description: Easy access to official spatial data sets of Brazil as 'sf' objects in R.
-	     The package includes a wide range of geospatial data available at various 
-             geographic scales and for various years with harmonized attributes, projection and topology.
+Description: Easy access to official spatial data sets of Brazil as 'sf' objects 
+             in R. The package includes a wide range of geospatial data available
+             at various geographic scales and for various years with harmonized
+             attributes, projection and topology.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: TRUE
 Depends: R (>= 3.5.0)
-Suggests: covr, dplyr (>= 0.8-3), ggplot2, knitr, magrittr, mapview,
-        rio, rmarkdown, testthat, tmap
-Imports: httr, readr, sf (>= 0.9-0), utils
-RoxygenNote: 7.1.0
+Suggests: covr, dplyr (>= 0.8-3), ggplot2 (>= 3.3.1), knitr, magrittr,
+        mapview, rmarkdown, testthat
+Imports: httr (>= 1.4.1), readr, sf (>= 0.9-3), utils
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2020-03-29 16:54:13 UTC; rafa
+Packaged: 2020-10-04 12:42:11 UTC; user
 Author: Rafael H. M. Pereira [aut, cre]
     (<https://orcid.org/0000-0003-2125-7465>),
   Caio Nogueira Goncalves [aut],
@@ -46,4 +47,4 @@ Author: Rafael H. M. Pereira [aut, cre]
   Ipea - Institue for Applied Economic Research [cph, fnd]
 Maintainer: Rafael H. M. Pereira <rafa.pereira.br@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-03-29 17:20:02 UTC
+Date/Publication: 2020-10-04 13:00:03 UTC

@@ -4,16 +4,17 @@
 \alias{read_metro_area}
 \title{Download shape files of official metropolitan areas in Brazil as an sf object.}
 \usage{
-read_metro_area(year = 2018, simplified = TRUE, showProgress = TRUE, tp)
+read_metro_area(year = 2018, simplified = TRUE, showProgress = TRUE)
 }
 \arguments{
 \item{year}{A year number in YYYY format (defaults to 2018)}
 
-\item{simplified}{Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)}
+\item{simplified}{Logic FALSE or TRUE, indicating whether the function returns the
+data set with 'original' resolution or a data set with 'simplified' borders (Defaults to TRUE).
+For spatial analysis and statistics users should set simplified = FALSE. Borders have been
+simplified by removing vertices of borders using st_simplify{sf} preserving topology with a dTolerance of 100.}
 
 \item{showProgress}{Logical. Defaults to (TRUE) display progress bar}
-
-\item{tp}{Argument deprecated. Please use argument 'simplified'}
 }
 \description{
 The function returns the shapes of municipalities grouped by their respective metro areas.

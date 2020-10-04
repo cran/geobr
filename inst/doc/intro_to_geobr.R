@@ -18,7 +18,6 @@ knitr::opts_chunk$set(
   library(ggplot2)
   library(sf)
   library(dplyr)
-  library(rio)
 
 ## ----message=FALSE, warning=FALSE---------------------------------------------
 # Available data sets
@@ -45,7 +44,7 @@ print(datasets, n=21)
 
 ## ----message=FALSE, warning=FALSE, results='hide'-----------------------------
 meso <- read_intermediate_region(year=2017)
-states <- read_state(year=2014)
+states <- read_state(year=2019)
 
 
 ## ----message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8, fig.align = "center"----
@@ -65,10 +64,12 @@ states <- read_state(year=2014)
 
 
 ## ----message=FALSE, warning=FALSE, results='hide', fig.height = 8, fig.width = 8, fig.align = "center"----
-# Download all municipalities of Rio
-  all_muni <- read_municipality( code_muni = "RJ", year= 2000)
 
-## ----message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8, fig.align = "center"----
+library(ggplot2)
+
+# Download all municipalities of Rio
+  all_muni <- read_municipality( code_muni = "RJ", year= 2010)
+
 
 # plot
   ggplot() +
@@ -77,22 +78,20 @@ states <- read_state(year=2014)
     theme_minimal() +
     no_axis
 
-## ----message=FALSE, warning=FALSE, results='hide', fig.height = 8, fig.width = 8, fig.align = "center"----
-# download Life Expectancy data
-  adh <- rio::import("http://atlasbrasil.org.br/2013/data/rawData/Indicadores%20Atlas%20-%20RADAR%20IDHM.xlsx", which = "Dados")
+## ----message=FALSE, warning=FALSE, results='hide'-----------------------------
+# Read data.frame with life expectancy data
+df <- utils::read.csv(system.file("extdata/br_states_lifexpect2017.csv", package = "geobr"), encoding = "UTF-8")
 
-# keep only information for the year 2010 and the columns we want
-  adh <- subset(adh, ANO == 2014)
+states$name_state <- tolower(states$name_state)
+df$uf <- tolower(df$uf)
 
-# Download the sf of all Brazilian states
-  # states <- read_state(year= 2014)
+# join the databases
+states <- dplyr::left_join(states, df, by = c("name_state" = "uf"))
 
-# joind the databases
-  states <-left_join(states, adh, by = c("abbrev_state" = "NOME_AGREGA"))
 
 ## ----message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8, fig.align = "center"----
   ggplot() +
-    geom_sf(data=states, aes(fill=ESPVIDA), color= NA, size=.15) +
+    geom_sf(data=states, aes(fill=ESPVIDA2017), color= NA, size=.15) +
       labs(subtitle="Life Expectancy at birth, Brazilian States, 2014", size=8) +
       scale_fill_distiller(palette = "Blues", name="Life Expectancy", limits = c(65,80)) +
       theme_minimal() +

@@ -9,8 +9,7 @@ read_census_tract(
   year = 2010,
   zone = "urban",
   simplified = TRUE,
-  showProgress = TRUE,
-  tp
+  showProgress = TRUE
 )
 }
 \arguments{
@@ -20,13 +19,14 @@ all census tracts of the country are loaded.}
 
 \item{year}{Year of the data (defaults to 2010)}
 
-\item{zone}{"urban" or "rural" census tracts come in separate files in the year 2000 (defaults to "urban")}
+\item{zone}{For census tracts before 2010, 'urban' and 'rural' census tracts are separate data sets.}
 
-\item{simplified}{Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)}
+\item{simplified}{Logic FALSE or TRUE, indicating whether the function returns the
+data set with 'original' resolution or a data set with 'simplified' borders (Defaults to TRUE).
+For spatial analysis and statistics users should set simplified = FALSE. Borders have been
+simplified by removing vertices of borders using st_simplify{sf} preserving topology with a dTolerance of 100.}
 
 \item{showProgress}{Logical. Defaults to (TRUE) display progress bar}
-
-\item{tp}{Argument deprecated. Please use argument 'simplified'}
 }
 \description{
 Download shape files of census tracts of the Brazilian Population Census (Only years 2000 and 2010 are currently available).
@@ -53,7 +53,6 @@ library(geobr)
 
 }
 
-
 }
 \seealso{
 Other general area functions: 
@@ -61,6 +60,7 @@ Other general area functions:
 \code{\link{read_biomes}()},
 \code{\link{read_conservation_units}()},
 \code{\link{read_country}()},
+\code{\link{read_health_region}()},
 \code{\link{read_immediate_region}()},
 \code{\link{read_intermediate_region}()},
 \code{\link{read_meso_region}()},

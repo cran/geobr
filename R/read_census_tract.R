@@ -4,10 +4,12 @@
 #'  a state is passed, (e.g. 33 or "RJ") the function will load all census tracts of that state. If code_tract="all",
 #'  all census tracts of the country are loaded.
 #' @param year Year of the data (defaults to 2010)
-#' @param zone "urban" or "rural" census tracts come in separate files in the year 2000 (defaults to "urban")
-#' @param simplified Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)
+#' @param simplified Logic FALSE or TRUE, indicating whether the function returns the
+#'  data set with 'original' resolution or a data set with 'simplified' borders (Defaults to TRUE).
+#'  For spatial analysis and statistics users should set simplified = FALSE. Borders have been
+#'  simplified by removing vertices of borders using st_simplify{sf} preserving topology with a dTolerance of 100.
+#' @param zone For census tracts before 2010, 'urban' and 'rural' census tracts are separate data sets.
 #' @param showProgress Logical. Defaults to (TRUE) display progress bar
-#' @param tp Argument deprecated. Please use argument 'simplified'
 #'
 #' @export
 #' @family general area functions
@@ -32,11 +34,7 @@
 #'
 #' }
 #'
-#'
-read_census_tract <- function(code_tract, year=2010, zone = "urban", simplified=TRUE, showProgress=TRUE, tp){
-
-  # deprecated 'tp' argument
-  if (!missing("tp")){stop(" 'tp' argument deprecated. Please use argument 'simplified' TRUE or FALSE")}
+read_census_tract <- function(code_tract, year=2010, zone = "urban", simplified=TRUE, showProgress=TRUE){
 
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="census_tract", year=year, simplified=simplified)

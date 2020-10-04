@@ -4,16 +4,17 @@
 \alias{read_region}
 \title{Download shape file of Brazil Regions as sf objects.}
 \usage{
-read_region(year = 2010, simplified = TRUE, showProgress = TRUE, tp)
+read_region(year = 2010, simplified = TRUE, showProgress = TRUE)
 }
 \arguments{
 \item{year}{Year of the data (defaults to 2010)}
 
-\item{simplified}{Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)}
+\item{simplified}{Logic FALSE or TRUE, indicating whether the function returns the
+data set with 'original' resolution or a data set with 'simplified' borders (Defaults to TRUE).
+For spatial analysis and statistics users should set simplified = FALSE. Borders have been
+simplified by removing vertices of borders using st_simplify{sf} preserving topology with a dTolerance of 100.}
 
 \item{showProgress}{Logical. Defaults to (TRUE) display progress bar}
-
-\item{tp}{Argument deprecated. Please use argument 'simplified'}
 }
 \description{
 Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
@@ -35,6 +36,7 @@ Other general area functions:
 \code{\link{read_census_tract}()},
 \code{\link{read_conservation_units}()},
 \code{\link{read_country}()},
+\code{\link{read_health_region}()},
 \code{\link{read_immediate_region}()},
 \code{\link{read_intermediate_region}()},
 \code{\link{read_meso_region}()},

@@ -1,10 +1,6 @@
-#' Download official data of Brazilian biomes as an sf object.
+#' Download official data of Brazilian health regions as an sf object.
 #'
-#' This data set includes  polygons of all biomes present in Brazilian territory and coastal area.
-#' The latest data set dates to 2019 and it is available at scale 1:250.000. The 2004 data set is at
-#' the scale 1:5.000.000. The original data comes from IBGE. More information at https://www.ibge.gov.br/apps/biomas/
-#'
-#' @param year A date number in YYYY format (defaults to 2019)
+#' @param year Year of the data (defaults to 2013, latest available)
 #' @param simplified Logic FALSE or TRUE, indicating whether the function returns the
 #'  data set with 'original' resolution or a data set with 'simplified' borders (Defaults to TRUE).
 #'  For spatial analysis and statistics users should set simplified = FALSE. Borders have been
@@ -17,15 +13,15 @@
 #'
 #' library(geobr)
 #'
-#' # Read biomes
-#'   b <- read_biomes(year=2019)
+#' # Read all health regions for a given year
+#'   hr <- read_health_region( year=2013)
 #'
 #'}
 #'
-read_biomes <- function(year=2019, simplified=TRUE, showProgress=TRUE){
+read_health_region <- function(year=2013, simplified=TRUE, showProgress=TRUE){
 
   # Get metadata with data url addresses
-  temp_meta <- select_metadata(geography="biomes", year=year, simplified=simplified)
+  temp_meta <- select_metadata(geography="health_region", year=year, simplified=simplified)
 
   # list paths of files to download
   file_url <- as.character(temp_meta$download_path)
@@ -33,4 +29,5 @@ read_biomes <- function(year=2019, simplified=TRUE, showProgress=TRUE){
   # download files
   temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
   return(temp_sf)
+
 }

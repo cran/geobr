@@ -6,9 +6,11 @@
 #' @param year Year of the data (defaults to 2010)
 #' @param code_muni The 7-digit code of a municipality. If the two-digit code or a two-letter uppercase abbreviation of
 #'  a state is passed, (e.g. 33 or "RJ") the function will load all municipalities of that state. If code_muni="all", all municipalities of the country will be loaded.
-#' @param simplified Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)
+#' @param simplified Logic FALSE or TRUE, indicating whether the function returns the
+#'  data set with 'original' resolution or a data set with 'simplified' borders (Defaults to TRUE).
+#'  For spatial analysis and statistics users should set simplified = FALSE. Borders have been
+#'  simplified by removing vertices of borders using st_simplify{sf} preserving topology with a dTolerance of 100.
 #' @param showProgress Logical. Defaults to (TRUE) display progress bar
-#' @param tp Argument deprecated. Please use argument 'simplified'
 #'
 #' @export
 #' @family general area functions
@@ -28,10 +30,7 @@
 #'}
 #'
 
-read_municipality <- function(code_muni="all", year=2010, simplified=TRUE, showProgress=TRUE, tp){
-
-  # deprecated 'tp' argument
-  if (!missing("tp")){stop(" 'tp' argument deprecated. Please use argument 'simplified' TRUE or FALSE")}
+read_municipality <- function(code_muni="all", year=2010, simplified=TRUE, showProgress=TRUE){
 
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="municipality", year=year, simplified=simplified)
@@ -41,14 +40,56 @@ read_municipality <- function(code_muni="all", year=2010, simplified=TRUE, showP
 
   if( year < 1992){
 
-    # list paths of files to download
-    file_url <- as.character(temp_meta$download_path)
+    # First download the data
+      # list paths of files to download
+      file_url <- as.character(temp_meta$download_path)
 
-    # download files
-    temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
-    return(temp_sf)
+      # download gpkg
+      temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
 
-    } else {
+    # if code_muni=="all", simply return the full data set
+      if( is.null(code_muni) | code_muni=="all"){ message("Loading data for the whole country\n")
+        return(temp_sf)
+        }
+
+    # if input is a state code
+      else if(nchar(code_muni)==2){
+
+      # invalid state code
+      if( !(code_muni %in% substr(temp_sf$code_muni,1,2)) & !(code_muni %in% temp_meta$abbrev_state)){
+        stop("Error: Invalid value to argument code_muni")}
+
+        else if (is.numeric(code_muni)){
+          x <- code_muni
+          temp_sf <- subset(temp_sf, substr(code_muni,1,2)==x)
+          return(temp_sf)}
+
+        else if (is.character(code_muni)){
+          x <- code_muni
+          temp_sf <- subset(temp_sf, substr(abbrev_state,1,2)==x)
+          return(temp_sf)}
+        }
+
+
+  # if input is a muni_code
+      else if(nchar(code_muni)==7) {
+
+    # invalid muni_code
+
+      if( !( code_muni %in% temp_sf$code_muni)){
+        stop("Error: Invalid value to argument code_muni")}
+
+    # valid muni_code
+        else {
+            x <- code_muni
+            temp_sf <- subset(temp_sf, code_muni==x)
+            return(temp_sf)}
+      }
+
+      else if(nchar(code_muni)!=7 | nchar(code_muni)!=2) {
+        stop("Error: Invalid value to argument code_muni")}
+
+        } else {
 
 
 # BLOCK 2.2 From 2000 onwards  ----------------------------
@@ -81,6 +122,7 @@ read_municipality <- function(code_muni="all", year=2010, simplified=TRUE, showP
 
     # input is a state code
     if(nchar(code_muni)==2){
+      sf <- subset(sf, code_state==substr(code_muni, 1, 2))
         return(sf) }
 
     # input is a municipality code
@@ -94,3 +136,4 @@ read_municipality <- function(code_muni="all", year=2010, simplified=TRUE, showP
     }
     }
   }
+

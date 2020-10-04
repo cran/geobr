@@ -4,16 +4,17 @@
 \alias{read_indigenous_land}
 \title{Download official data of indigenous lands as an sf object.}
 \usage{
-read_indigenous_land(date = 201907, simplified = TRUE, showProgress = TRUE, tp)
+read_indigenous_land(date = 201907, simplified = TRUE, showProgress = TRUE)
 }
 \arguments{
 \item{date}{A date numer in YYYYMM format (Defaults to 201907)}
 
-\item{simplified}{Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)}
+\item{simplified}{Logic FALSE or TRUE, indicating whether the function returns the
+data set with 'original' resolution or a data set with 'simplified' borders (Defaults to TRUE).
+For spatial analysis and statistics users should set simplified = FALSE. Borders have been
+simplified by removing vertices of borders using st_simplify{sf} preserving topology with a dTolerance of 100.}
 
 \item{showProgress}{Logical. Defaults to (TRUE) display progress bar}
-
-\item{tp}{Argument deprecated. Please use argument 'simplified'}
 }
 \description{
 The data set covers the whole of Brazil and it includes indigenous lands from all ethnicities and

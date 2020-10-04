@@ -6,9 +6,11 @@
 #'  a state is passed, (e.g. 33 or "RJ") the function will load all weighting areas of that state. If code_weighting="all",
 #'  all weighting areas of the country are loaded.
 #' @param year Year of the data (defaults to 2010)
-#' @param simplified Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)
+#' @param simplified Logic FALSE or TRUE, indicating whether the function returns the
+#'  data set with 'original' resolution or a data set with 'simplified' borders (Defaults to TRUE).
+#'  For spatial analysis and statistics users should set simplified = FALSE. Borders have been
+#'  simplified by removing vertices of borders using st_simplify{sf} preserving topology with a dTolerance of 100.
 #' @param showProgress Logical. Defaults to (TRUE) display progress bar
-#' @param tp Argument deprecated. Please use argument 'simplified'
 #'
 #' @export
 #' @family general area functions
@@ -33,13 +35,7 @@
 #'
 #' }
 #'
-#'
-#'
-#'
-read_weighting_area <- function(code_weighting="all", year=2010, simplified=TRUE, showProgress=TRUE, tp){
-
-  # deprecated 'tp' argument
-  if (!missing("tp")){stop(" 'tp' argument deprecated. Please use argument 'simplified' TRUE or FALSE")}
+read_weighting_area <- function(code_weighting="all", year=2010, simplified=TRUE, showProgress=TRUE){
 
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="weighting_area", year=year, simplified=simplified)
@@ -81,9 +77,9 @@ read_weighting_area <- function(code_weighting="all", year=2010, simplified=TRUE
 
     # return code weighting area
 
-    } else if(code_weighting %in% temp_sf$code_weighting_area){    # Get weighting area
+    } else if(code_weighting %in% temp_sf$code_weighting){    # Get weighting area
       x <- code_weighting
-      temp_sf <- subset(temp_sf, code_weighting_area==x)
+      temp_sf <- subset(temp_sf, code_weighting==x)
       return(temp_sf)
 
     } else{

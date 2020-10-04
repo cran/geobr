@@ -7,9 +7,11 @@
 #'
 #'
 #' @param year A year number in YYYY format (defaults to 2015)
-#' @param simplified Logic TRUE or FALSE, indicating whether the function returns the 'original' dataset with high resolution or a dataset with 'simplified' borders (Defaults to TRUE)
+#' @param simplified Logic FALSE or TRUE, indicating whether the function returns the
+#'  data set with 'original' resolution or a data set with 'simplified' borders (Defaults to TRUE).
+#'  For spatial analysis and statistics users should set simplified = FALSE. Borders have been
+#'  simplified by removing vertices of borders using st_simplify{sf} preserving topology with a dTolerance of 100.
 #' @param showProgress Logical. Defaults to (TRUE) display progress bar
-#' @param tp Argument deprecated. Please use argument 'simplified'
 #'
 #' @export
 #' @examples \dontrun{
@@ -22,10 +24,7 @@
 #' }
 #'
 #'
-read_urban_area <- function(year=2015, simplified=TRUE, showProgress=TRUE, tp){
-
-  # deprecated 'tp' argument
-  if (!missing("tp")){stop(" 'tp' argument deprecated. Please use argument 'simplified' TRUE or FALSE")}
+read_urban_area <- function(year=2015, simplified=TRUE, showProgress=TRUE){
 
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="urban_area", year=year, simplified=simplified)
