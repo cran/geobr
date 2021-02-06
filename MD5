@@ -1,8 +1,8 @@
-961cbc6cab3ee571764796af8d6ba52b *DESCRIPTION
+817bfad8dc11ad9f3512b65309687cf8 *DESCRIPTION
 fe38c920d29611a2e7fa62063397a33d *LICENSE
 00a1322487f9486718d9fd5b26d5bab4 *NAMESPACE
 9b8331202ddeedc4a30198f2ee7ca413 *R/cep_to_state.R
-770c15fef627eceec921f6e655308ed7 *R/download_metadata.R
+ce1eaee3c70e93723a730e30b222f939 *R/download_metadata.R
 6b19f2212191ae8b8595a7fd83e11a59 *R/geobr.R
 ced8e0e83bd9f41ee5adcf7503251833 *R/grid_state_correspondence_table.R
 0edc77f6696a942d7c4a144e63d50a96 *R/list_geobr.R
