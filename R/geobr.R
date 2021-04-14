@@ -9,6 +9,11 @@
 #' @docType package
 #' @name geobr
 #' @importFrom utils "tail"
+#' @importFrom data.table "%like%"
+#' @importFrom curl "has_internet"
+
+
+
 
 # nocov start
 NULL

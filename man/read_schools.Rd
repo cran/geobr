@@ -2,32 +2,30 @@
 % Please edit documentation in R/read_schools.R
 \name{read_schools}
 \alias{read_schools}
-\title{Download geolocated data of schools as an sf object.}
+\title{Download geolocated data of schools}
 \usage{
 read_schools(year = 2020, showProgress = TRUE)
 }
 \arguments{
-\item{year}{A year number in YYYY format (defaults to 2020)}
+\item{year}{A year number in YYYY format. Defaults to \code{2020}}
 
-\item{showProgress}{Logical. Defaults to (TRUE) display progress bar}
+\item{showProgress}{Logical. Defaults to \code{TRUE} display progress bar}
+}
+\value{
+An \verb{"sf" "data.frame"} object
 }
 \description{
 Data comes from the School Census collected by INEP, the National Institute
-for Educational Studies and Research "Anisio Teixeira". The date of the last
+for Educational Studies and Research Anisio Teixeira. The date of the last
 data update is registered in the database in the column 'date_update'. These
 data uses Geodetic reference system "SIRGAS2000" and CRS(4674). The coordinates
 of each school if collected by INEP. Periodically the coordinates are revised
 with the objective of improving the quality of the data. More information
-available at http://portal.inep.gov.br/web/guest/dados/catalogo-de-escolas
+available at \url{https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas/}
 }
 \examples{
-\donttest{
-
-library(geobr)
-
+\dontrun{ if (interactive()) {
 # Read all schools in the country
-  s <- read_schools( year = 2020)
-
-}
-
+s <- read_schools( year = 2020)
+}}
 }

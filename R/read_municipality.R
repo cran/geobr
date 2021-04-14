@@ -1,36 +1,39 @@
-#' Download shape files of Brazilian municipalities as sf objects.
+#' Download spatial data of Brazilian municipalities
 #'
-#' Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
+#' @description
+#' Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674).
 #'
+#' @param year Year of the data. Defaults to `2010`.
+#' @param code_muni The 7-digit identification code of a municipality. If
+#' `code_muni = "all"` (default), all municipalities of the country will be
+#' downloaded. Alternatively, if the two-digit identification code or a
+#' two-letter uppercase abbreviation of a state is passed, e.g. `33` or `"RJ"`,
+#' all municipalities of that state will be downloaded. Municipality identification
+#' codes are defined in \url{https://www.ibge.gov.br/explica/codigos-dos-municipios.php}.
+#' @param simplified Logic `FALSE` or `TRUE`, indicating whether the function
+#' returns the data set with original' resolution or a data set with 'simplified'
+#' borders. Defaults to `TRUE`. For spatial analysis and statistics users should
+#' set `simplified = FALSE`. Borders have been simplified by removing vertices of
+#' borders using `sf::st_simplify()` preserving topology with a `dTolerance` of 100.
+#' @param showProgress Logical. Defaults to `TRUE` display progress bar
 #'
-#' @param year Year of the data (defaults to 2010)
-#' @param code_muni The 7-digit code of a municipality. If the two-digit code or a two-letter uppercase abbreviation of
-#'  a state is passed, (e.g. 33 or "RJ") the function will load all municipalities of that state. If code_muni="all", all municipalities of the country will be loaded.
-#' @param simplified Logic FALSE or TRUE, indicating whether the function returns the
-#'  data set with 'original' resolution or a data set with 'simplified' borders (Defaults to TRUE).
-#'  For spatial analysis and statistics users should set simplified = FALSE. Borders have been
-#'  simplified by removing vertices of borders using st_simplify{sf} preserving topology with a dTolerance of 100.
-#' @param showProgress Logical. Defaults to (TRUE) display progress bar
+#' @return An `"sf" "data.frame"` object
 #'
 #' @export
 #' @family general area functions
-#' @examples \donttest{
-#'
-#' library(geobr)
-#'
+#' @examples \dontrun{ if (interactive()) {
 #' # Read specific municipality at a given year
-#'   mun <- read_municipality(code_muni=1200179, year=2017)
+#' mun <- read_municipality(code_muni = 1200179, year = 2017)
 #'
-#'# Read all municipalities of a state at a given year
-#'   mun <- read_municipality(code_muni=33, year=2010)
-#'   mun <- read_municipality(code_muni="RJ", year=2010)
+#' # Read all municipalities of a state at a given year
+#' mun <- read_municipality(code_muni = 33, year = 2010)
+#' mun <- read_municipality(code_muni = "RJ", year = 2010)
 #'
-#'# Read all municipalities of the country at a given year
-#'   mun <- read_municipality(code_muni="all", year=2018)
-#'}
-#'
-
-read_municipality <- function(code_muni="all", year=2010, simplified=TRUE, showProgress=TRUE){
+#' # Read all municipalities of the country at a given year
+#' mun <- read_municipality(code_muni = "all", year = 2018)
+#'}}
+read_municipality <-
+  function(code_muni = "all", year = 2010, simplified = TRUE, showProgress = TRUE) {
 
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="municipality", year=year, simplified=simplified)
@@ -56,7 +59,7 @@ read_municipality <- function(code_muni="all", year=2010, simplified=TRUE, showP
       else if(nchar(code_muni)==2){
 
       # invalid state code
-      if( !(code_muni %in% substr(temp_sf$code_muni,1,2)) & !(code_muni %in% temp_meta$abbrev_state)){
+      if( !(code_muni %in% substr(temp_sf$code_muni,1,2)) & !(code_muni %in% temp_sf$abbrev_state)){
         stop("Error: Invalid value to argument code_muni")}
 
         else if (is.numeric(code_muni)){

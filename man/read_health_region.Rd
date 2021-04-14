@@ -2,39 +2,55 @@
 % Please edit documentation in R/read_health_region.R
 \name{read_health_region}
 \alias{read_health_region}
-\title{Download official data of Brazilian health regions as an sf object.}
+\title{Download spatial data of Brazilian health regions and health macro regions}
 \usage{
-read_health_region(year = 2013, simplified = TRUE, showProgress = TRUE)
+read_health_region(
+  year = 2013,
+  macro = FALSE,
+  simplified = TRUE,
+  showProgress = TRUE
+)
 }
 \arguments{
-\item{year}{Year of the data (defaults to 2013, latest available)}
+\item{year}{Year of the data. Defaults to 2013, latest available.}
 
-\item{simplified}{Logic FALSE or TRUE, indicating whether the function returns the
-data set with 'original' resolution or a data set with 'simplified' borders (Defaults to TRUE).
-For spatial analysis and statistics users should set simplified = FALSE. Borders have been
-simplified by removing vertices of borders using st_simplify{sf} preserving topology with a dTolerance of 100.}
+\item{macro}{Logic. If \code{FALSE} (default), the function downloads health regions data.
+If \code{TRUE}, the function downloads macro regions data.}
 
-\item{showProgress}{Logical. Defaults to (TRUE) display progress bar}
+\item{simplified}{Logic \code{FALSE} or \code{TRUE}, indicating whether the function
+returns the data set with original' resolution or a data set with
+'simplified' borders. Defaults to \code{TRUE}. For spatial analysis and
+statistics users should set \code{simplified = FALSE}. Borders have been
+simplified by removing vertices of borders using \code{sf::st_simplify()}
+preserving topology with a \code{dTolerance} of 100.}
+
+\item{showProgress}{Logical. Defaults to \code{TRUE} display progress bar}
+}
+\value{
+An \verb{"sf" "data.frame"} object
 }
 \description{
-Download official data of Brazilian health regions as an sf object.
+Health regions are used to guide the the regional and state planning of health services.
+Macro health regions, in particular, are used to guide the planning of high complexity
+health services. These services involve larger economics of scale and are concentrated in
+few municipalities because they are generally more technology intensive, costly and face
+shortages of specialized professionals. A macro region comprises one or more health regions.
 }
 \examples{
-\donttest{
-
-library(geobr)
-
+\dontrun{ if (interactive()) {
 # Read all health regions for a given year
-  hr <- read_health_region( year=2013)
+hr <- read_health_region( year=2013 )
 
-}
-
+# Read all macro health regions
+mhr <- read_health_region( year=2013, macro =TRUE)
+}}
 }
 \seealso{
 Other general area functions: 
 \code{\link{read_amazon}()},
 \code{\link{read_biomes}()},
 \code{\link{read_census_tract}()},
+\code{\link{read_comparable_areas}()},
 \code{\link{read_conservation_units}()},
 \code{\link{read_country}()},
 \code{\link{read_immediate_region}()},

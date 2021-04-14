@@ -26,7 +26,14 @@
     </style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
@@ -158,7 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>datasets <span class="ot">&lt;-</span> <span class="fu">list_geobr</span>()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(datasets, <span class="at">n=</span><span class="dv">21</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 23 x 4</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 27 x 4</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    `function`       geography            years                         source   </span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;                &lt;chr&gt;                         &lt;chr&gt;    </span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 `read_country`   Country              1872, 1900, 1911, 1920, 1933~ IBGE     </span></span>
@@ -166,23 +173,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 `read_state`     States               1872, 1900, 1911, 1920, 1933~ IBGE     </span></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 `read_meso_regi~ Meso region          2000, 2001, 2010, 2013, 2014~ IBGE     </span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 `read_micro_reg~ Micro region         2000, 2001, 2010, 2013, 2014~ IBGE     </span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 `read_intermedi~ Intermediate region  2017, 2019                    IBGE     </span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 `read_immediate~ Immediate region     2017, 2019                    IBGE     </span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 `read_weighting~ Census weighting ar~ 2010                          IBGE     </span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 `read_census_tr~ Census tract (setor~ 2000, 2010, 2017              IBGE     </span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 `read_municipal~ Municipality seats ~ 1872, 1900, 1911, 1920, 1933~ IBGE     </span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11 `read_statistic~ Statistical Grid of~ 2010                          IBGE     </span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12 `read_metro_are~ Metropolitan areas   1970, 2001, 2002, 2003, 2005~ IBGE     </span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13 `read_urban_are~ Urban footprints     2005, 2015                    IBGE     </span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14 `read_amazon`    Brazil&#39;s Legal Amaz~ 2012                          MMA      </span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15 `read_biomes`    Biomes               2004, 2019                    IBGE     </span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16 `read_conservat~ Environmental Conse~ 201909                        MMA      </span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17 `read_disaster_~ Disaster risk areas  2010                          CEMADEN ~</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18 `read_indigenou~ Indigenous lands     201907                        FUNAI    </span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 19 `read_semiarid`  Semi Arid region     2005, 2017                    IBGE     </span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 20 `read_health_fa~ Health facilities    2015                          CNES, Da~</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 21 `read_health_re~ Health regions       1991, 1994, 1997, 2001, 2005~ DataSUS  </span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ... with 2 more rows</span></span></code></pre></div>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 `read_intermedi~ Intermediate region  2017, 2019, 2020              IBGE     </span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 `read_immediate~ Immediate region     2017, 2019, 2020              IBGE     </span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 `read_municipal~ Municipality         1872, 1900, 1911, 1920, 1933~ IBGE     </span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 `read_municipal~ Municipality seats ~ 1872, 1900, 1911, 1920, 1933~ IBGE     </span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 `read_weighting~ Census weighting ar~ 2010                          IBGE     </span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11 `read_census_tr~ Census tract (setor~ 2000, 2010, 2017, 2019, 2020  IBGE     </span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12 `read_statistic~ Statistical Grid of~ 2010                          IBGE     </span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13 `read_metro_are~ Metropolitan areas   1970, 2001, 2002, 2003, 2005~ IBGE     </span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14 `read_urban_are~ Urban footprints     2005, 2015                    IBGE     </span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15 `read_amazon`    Brazil&#39;s Legal Amaz~ 2012                          MMA      </span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16 `read_biomes`    Biomes               2004, 2019                    IBGE     </span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17 `read_conservat~ Environmental Conse~ 201909                        MMA      </span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18 `read_disaster_~ Disaster risk areas  2010                          CEMADEN ~</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 19 `read_indigenou~ Indigenous lands     201907, 202103                FUNAI    </span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 20 `read_semiarid`  Semi Arid region     2005, 2017                    IBGE     </span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 21 `read_health_fa~ Health facilities    2015                          CNES, Da~</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ... with 6 more rows</span></span></code></pre></div>
 </div>
 </div>
 <div id="download-spatial-data-as-sf-objects" class="section level2">
@@ -200,13 +207,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># All census tracts in the state of Rio de Janeiro</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  cntr <span class="ot">&lt;-</span> <span class="fu">read_census_tract</span>(<span class="at">code_tract =</span> <span class="st">&quot;RJ&quot;</span>, <span class="at">year =</span> <span class="dv">2010</span>)</span></code></pre></div>
-<p>If the paramter <code>code_</code> is not passed to the function, geobr returns the data for the whole country by default.</p>
+<p>If the parameter <code>code_</code> is not passed to the function, geobr returns the data for the whole country by default.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>meso <span class="ot">&lt;-</span> <span class="fu">read_intermediate_region</span>(<span class="at">year=</span><span class="dv">2017</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>states <span class="ot">&lt;-</span> <span class="fu">read_state</span>(<span class="at">year=</span><span class="dv">2019</span>)</span></code></pre></div>
 </div>
 <div id="important-note-about-data-resolution" class="section level2">
 <h2>Important note about data resolution</h2>
-<p>All functions to download polygon data such as states, municipalites etc. have a <code>simplified</code> argument. When <code>simplified = FALSE</code>, geobr will return the original data set with high resolution at detailed geographic scale (see documentation). By default, however, <code>simplified = TRUE</code> and geobr returns data set geometries with simplified borders to improve speed of downloading and plotting the data.</p>
+<p>All functions to download polygon data such as states, municipalities etc. have a <code>simplified</code> argument. When <code>simplified = FALSE</code>, geobr will return the original data set with high resolution at detailed geographic scale (see documentation). By default, however, <code>simplified = TRUE</code> and geobr returns data set geometries with simplified borders to improve speed of downloading and plotting the data.</p>
 </div>
 <div id="plot-the-data" class="section level2">
 <h2>Plot the data</h2>
