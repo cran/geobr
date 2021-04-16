@@ -1,4 +1,4 @@
-5810c69005d9432eb9b9045b060d1712 *DESCRIPTION
+c1d40a91f11706ba9a9a2bf7c835ca29 *DESCRIPTION
 fe38c920d29611a2e7fa62063397a33d *LICENSE
 945368fb09e46b444cdbb963d03223af *NAMESPACE
 97fce210367d0f9e0f4e3757acbb056b *R/cep_to_state.R
@@ -34,8 +34,8 @@ bb44745fb74ef0eb6f299031a30898ae *R/read_semiarid.R
 8974ed95b3fc0aaf7b402a16d40a0d8d *R/read_urban_area.R
 685de4bee36f4060ece37ab359a7265f *R/read_urban_concentrations.R
 543ab4c43aebe1ea8d516b8ce8d3da15 *R/read_weighting_area.R
-f504905fa9553bf7d9e9985938b72c60 *R/utils.R
-d4aca15db4e250c11daceae82ebcf75a *build/partial.rdb
+3d7718ce63f351d1717861e520300917 *R/utils.R
+8fc5e2444525301d9e03c5eed355b2c2 *build/partial.rdb
 d093299e073d7404040055c1a64758f2 *build/vignette.rds
 fadda53e3a4be9a7f879820022d3836a *data/grid_state_correspondence_table.RData
 2f172127f9d74651cb2218255a333b7a *inst/doc/intro_to_geobr.R
@@ -91,7 +91,7 @@ b9ddd3cd64f3078ddaadc133c25dd11d *man/read_urban_concentrations.Rd
 64cacb86135271bb0b39eb67b01477be *man/select_year_input.Rd
 74f87844e2c5567724c7bfa34231b779 *tests/testthat.R
 f774a810741677f4ca98421bb32a474e *tests/testthat/test-cep_to_state.R
-b893bf993de8100e210c6f626c0e716b *tests/testthat/test-download_metadata.R
+c9d79d50002a9cc099dce7529f0ce38d *tests/testthat/test-download_metadata.R
 3d298ed3f540a22205a3212d56453497 *tests/testthat/test-grid_state_correspondence_table.R
 3f555fa991af9b7a4eda74fc86ce1a87 *tests/testthat/test-list_geobr.R
 2cdd68103d3e96b824960b6ea5e0115e *tests/testthat/test-lookup_muni.R
