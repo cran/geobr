@@ -1,11 +1,11 @@
-781c3ac0a786115a726c5f6fbde612b3 *DESCRIPTION
+890570ed148f7de95c08467e1bc4816d *DESCRIPTION
 fe38c920d29611a2e7fa62063397a33d *LICENSE
 945368fb09e46b444cdbb963d03223af *NAMESPACE
 97fce210367d0f9e0f4e3757acbb056b *R/cep_to_state.R
 804eda8089494d3a359325e8341ec21e *R/download_metadata.R
 a47df4239af8fed423133aa523d0c30d *R/geobr.R
 8aad6ba41620fc49fee7402ca2baea3a *R/grid_state_correspondence_table.R
-4c925b79fe461d5aec9dc5922eb73df6 *R/list_geobr.R
+14a247a70b43efc6a488bfd9848b3499 *R/list_geobr.R
 b68b6ae06acdb2645165f395d95d3cf7 *R/lookup_muni.R
 590a28fd12c811d0bcc2c2b52cb374c4 *R/read_amazon.R
 34f76eae86c055445f594f88126f2aae *R/read_biomes.R
@@ -35,7 +35,7 @@ bb44745fb74ef0eb6f299031a30898ae *R/read_semiarid.R
 685de4bee36f4060ece37ab359a7265f *R/read_urban_concentrations.R
 543ab4c43aebe1ea8d516b8ce8d3da15 *R/read_weighting_area.R
 3d7718ce63f351d1717861e520300917 *R/utils.R
-de1c0c6f0b657023b391f9dd5dc69826 *build/partial.rdb
+d996ab806db233c23a4fee0813c8f6c7 *build/partial.rdb
 d093299e073d7404040055c1a64758f2 *build/vignette.rds
 fadda53e3a4be9a7f879820022d3836a *data/grid_state_correspondence_table.RData
 2f172127f9d74651cb2218255a333b7a *inst/doc/intro_to_geobr.R
