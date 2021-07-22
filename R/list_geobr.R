@@ -21,7 +21,9 @@ if (file.exists(tempf)) {
 
 } else {
   # download it and save to metadata
-  httr::GET(url="https://raw.githubusercontent.com/ipeaGIT/geobr/master/README.md", httr::write_disk(tempf, overwrite = T))
+  git_url = "https://raw.githubusercontent.com/ipeaGIT/geobr/master/README.md"
+  check_connection(file_url = git_url )
+  httr::GET(url= git_url, httr::write_disk(tempf, overwrite = T))
   readme <- readLines(tempf, encoding = "UTF-8")
 }
 
