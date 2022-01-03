@@ -115,7 +115,11 @@ download_gpkg <- function(file_url, progress_bar = showProgress){
       check_connection(file_url[1])
 
       # download data
-      httr::GET(url=file_url, httr::progress(), httr::write_disk(temps, overwrite = T))
+      try( httr::GET(url=file_url,
+                     httr::progress(),
+                     httr::write_disk(temps, overwrite = T),
+                     config = httr::config(ssl_verifypeer = FALSE)
+                     ), silent = T)
       }
 
     # load gpkg to memory
@@ -135,7 +139,10 @@ download_gpkg <- function(file_url, progress_bar = showProgress){
       check_connection(file_url[1])
 
       # download data
-      httr::GET(url=file_url, httr::write_disk(temps, overwrite = T))
+      try( httr::GET(url=file_url,
+                     httr::write_disk(temps, overwrite = T),
+                     config = httr::config(ssl_verifypeer = FALSE)
+                     ), silent = T)
       }
 
     # load gpkg to memory
@@ -165,8 +172,10 @@ download_gpkg <- function(file_url, progress_bar = showProgress){
       # check if file has not been downloaded already. If not, download it
       if (!file.exists(temps)) {
                                 i <- match(c(x),file_url)
-                                httr::GET(url=x, #httr::progress(),
-                                          httr::write_disk(temps, overwrite = T))
+                                try( httr::GET(url=x, #httr::progress(),
+                                          httr::write_disk(temps, overwrite = T),
+                                          config = httr::config(ssl_verifypeer = FALSE)
+                                          ), silent = T)
                                 utils::setTxtProgressBar(pb, i)
                                 }
       })
@@ -196,7 +205,9 @@ download_gpkg <- function(file_url, progress_bar = showProgress){
       if (!file.exists(temps)) {
                                 i <- match(c(x),file_url)
                                 httr::GET(url=x, #httr::progress(),
-                                          httr::write_disk(temps, overwrite = T))
+                                          httr::write_disk(temps, overwrite = T),
+                                          config = httr::config(ssl_verifypeer = FALSE)
+                                          )
                               }
       })
 
@@ -249,6 +260,7 @@ load_gpkg <- function(file_url, temps=NULL){
 }
 
 
+# nocov end
 
 
 
@@ -273,12 +285,19 @@ check_connection <- function(file_url = 'https://www.ipea.gov.br/geobr/metadata/
     return(invisible(NULL))
   }
 
-  # test server connection
-  if (! crul::ok(file_url, verbose=FALSE) ) {
+  # test connection to geobr server
+  try(x <- httr::GET(file_url, # timeout(5),
+                     config = httr::config(ssl_verifypeer = FALSE)) , silent = TRUE
+  )
+
+  if (exists("x") == FALSE) {
+    message("Problem connecting to data server. Please try geobr again in a few minutes.")
+    return(invisible(NULL))
+
+  } else if (httr::http_error(x) == TRUE) {
     message("Problem connecting to data server. Please try geobr again in a few minutes.")
     return(invisible(NULL))
   }
+
 }
 
-
-# nocov end

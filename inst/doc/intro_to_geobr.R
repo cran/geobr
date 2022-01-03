@@ -19,12 +19,12 @@ knitr::opts_chunk$set(
   library(sf)
   library(dplyr)
 
-## ----eval=FALSE, message=FALSE, warning=FALSE---------------------------------
-#  # Available data sets
-#  datasets <- list_geobr()
-#  
-#  print(datasets, n=21)
-#  
+## ----message=FALSE, warning=FALSE---------------------------------------------
+# Available data sets
+datasets <- list_geobr()
+
+head(datasets, n=27)
+
 
 ## ----eval=FALSE, message=FALSE, warning=FALSE, results='hide'-----------------
 #  # State of Sergige
