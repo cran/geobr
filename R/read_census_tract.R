@@ -8,13 +8,9 @@
 #' the function will load all census tracts of that state. If `code_tract="all"`,
 #' all census tracts of the country are loaded.
 #' @param year Year of the data. Defaults to 2010
-#' @param simplified Logic `FALSE` or `TRUE`, indicating whether the function
-#' returns the data set with original' resolution or a data set with 'simplified'
-#' borders. Defaults to `TRUE`. For spatial analysis and statistics users should
-#' set `simplified = FALSE`. Borders have been simplified by removing vertices of
-#' borders using `sf::st_simplify()` preserving topology with a `dTolerance` of 100.
 #' @param zone For census tracts before 2010, 'urban' and 'rural' census tracts are separate data sets.
-#' @param showProgress Logical. Defaults to `TRUE` display progress bar
+#' @template simplified
+#' @template showProgress
 #'
 #' @return An `"sf" "data.frame"` object
 #'
@@ -42,6 +38,8 @@ read_census_tract <- function(code_tract, year=2010, zone = "urban", simplified=
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="census_tract", year=year, simplified=simplified)
 
+  # check if download failed
+  if (is.null(temp_meta)) { return(invisible(NULL)) }
 
   # Check zone input urban and rural inputs if year <=2007
   if (year<=2007){
@@ -71,12 +69,16 @@ read_census_tract <- function(code_tract, year=2010, zone = "urban", simplified=
 
       # download files
       temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
+
+      # check if download failed
+      if (is.null(temp_sf)) { return(invisible(NULL)) }
+
       return(temp_sf)
     }
 
-    else if( (!(substr(x = code_tract, 1, 2) %in% temp_meta$code) & !(toupper(substr(x = code_tract, 1, 2)) %in% temp_meta$code_abrev)
-              )&(!(paste0("U",substr(x = code_tract, 1, 2)) %in% substr(temp_meta$code, 1, 3)) & !(toupper(substr(x = code_tract, 1, 2)) %in% temp_meta$code_abrev)
-                 )&(!(paste0("R",substr(x = code_tract, 1, 2)) %in% substr(temp_meta$code, 1, 3)) & !(toupper(substr(x = code_tract, 1, 2)) %in% temp_meta$code_abrev))
+    else if( (!(substr(x = code_tract, 1, 2) %in% temp_meta$code) & !(toupper(substr(x = code_tract, 1, 2)) %in% temp_meta$code_abbrev)
+              )&(!(paste0("U",substr(x = code_tract, 1, 2)) %in% substr(temp_meta$code, 1, 3)) & !(toupper(substr(x = code_tract, 1, 2)) %in% temp_meta$code_abbrev)
+                 )&(!(paste0("R",substr(x = code_tract, 1, 2)) %in% substr(temp_meta$code, 1, 3)) & !(toupper(substr(x = code_tract, 1, 2)) %in% temp_meta$code_abbrev))
             ){
 
       stop("Error: Invalid Value to argument code_tract.")
@@ -87,21 +89,24 @@ read_census_tract <- function(code_tract, year=2010, zone = "urban", simplified=
       if (year<=2007 & zone == "urban") {
 
         if (is.numeric(code_tract)){ file_url <- as.character(subset(temp_meta, code==paste0("U",substr(code_tract, 1, 2)))$download_path) }
-        if (is.character(code_tract)){ file_url <- as.character(subset(temp_meta, code_abrev==toupper(substr(code_tract, 1, 2)))$download_path) }
+        if (is.character(code_tract)){ file_url <- as.character(subset(temp_meta, code_abbrev==toupper(substr(code_tract, 1, 2)))$download_path) }
 
       } else if (year<=2007 & zone == "rural") {
 
         if (is.numeric(code_tract)){ file_url <- as.character(subset(temp_meta, code==paste0("R",substr(code_tract, 1, 2)))$download_path) }
-        if (is.character(code_tract)){ file_url <- as.character(subset(temp_meta, code_abrev==toupper(substr(code_tract, 1, 2)))$download_path) }
+        if (is.character(code_tract)){ file_url <- as.character(subset(temp_meta, code_abbrev==toupper(substr(code_tract, 1, 2)))$download_path) }
 
       } else {
 
       if (is.numeric(code_tract)){ file_url <- as.character(subset(temp_meta, code==substr(code_tract, 1, 2))$download_path) }
-      if (is.character(code_tract)){ file_url <- as.character(subset(temp_meta, code_abrev==toupper(substr(code_tract, 1, 2)))$download_path) }
+      if (is.character(code_tract)){ file_url <- as.character(subset(temp_meta, code_abbrev==toupper(substr(code_tract, 1, 2)))$download_path) }
 
         }
       # download files
       sf <- download_gpkg(file_url, progress_bar = showProgress)
+
+      # check if download failed
+      if (is.null(sf)) { return(invisible(NULL)) }
 
       if(nchar(code_tract)==2){
         return(sf)

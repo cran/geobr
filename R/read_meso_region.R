@@ -8,12 +8,8 @@
 #' a two-letter uppercase abbreviation of a state is passed, (e.g. 33 or "RJ")
 #' the function will load all meso regions of that state. If `code_meso="all"`,
 #' all meso regions of the country are loaded.
-#' @param simplified Logic `FALSE` or `TRUE`, indicating whether the function
-#' returns the data set with original' resolution or a data set with 'simplified'
-#' borders. Defaults to `TRUE`. For spatial analysis and statistics users should
-#' set `simplified = FALSE`. Borders have been simplified by removing vertices of
-#' borders using `sf::st_simplify()` preserving topology with a `dTolerance` of 100.
-#' @param showProgress Logical. Defaults to `TRUE` display progress bar
+#' @template simplified
+#' @template showProgress
 #'
 #' @return An `"sf" "data.frame"` object
 #'
@@ -35,10 +31,13 @@ read_meso_region <- function(code_meso="all", year=2010, simplified=TRUE, showPr
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="meso_region", year=year, simplified=simplified)
 
+  # check if download failed
+  if (is.null(temp_meta)) { return(invisible(NULL)) }
+
 # Verify code_meso input
 
   # if code_meso=="all", read the entire country
-  if(code_meso=="all"){ message("Loading data for the whole country\n")
+  if(code_meso=="all"){
 
     # list paths of files to download
     file_url <- as.character(temp_meta$download_path)
@@ -49,14 +48,14 @@ read_meso_region <- function(code_meso="all", year=2010, simplified=TRUE, showPr
 
   }
 
-  if( !(substr(x = code_meso, 1, 2) %in% temp_meta$code) & !(substr(x = code_meso, 1, 2) %in% temp_meta$code_abrev)){
+  if( !(substr(x = code_meso, 1, 2) %in% temp_meta$code) & !(substr(x = code_meso, 1, 2) %in% temp_meta$code_abbrev)){
     stop("Error: Invalid Value to argument code_meso.")
 
   } else{
 
     # list paths of files to download
     if (is.numeric(code_meso)){ file_url <- as.character(subset(temp_meta, code==substr(code_meso, 1, 2))$download_path) }
-    if (is.character(code_meso)){ file_url <- as.character(subset(temp_meta, code_abrev==substr(code_meso, 1, 2))$download_path) }
+    if (is.character(code_meso)){ file_url <- as.character(subset(temp_meta, code_abbrev==substr(code_meso, 1, 2))$download_path) }
 
 
 

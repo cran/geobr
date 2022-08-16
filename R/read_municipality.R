@@ -10,12 +10,9 @@
 #' two-letter uppercase abbreviation of a state is passed, e.g. `33` or `"RJ"`,
 #' all municipalities of that state will be downloaded. Municipality identification
 #' codes are defined in \url{https://www.ibge.gov.br/explica/codigos-dos-municipios.php}.
-#' @param simplified Logic `FALSE` or `TRUE`, indicating whether the function
-#' returns the data set with original' resolution or a data set with 'simplified'
-#' borders. Defaults to `TRUE`. For spatial analysis and statistics users should
-#' set `simplified = FALSE`. Borders have been simplified by removing vertices of
-#' borders using `sf::st_simplify()` preserving topology with a `dTolerance` of 100.
-#' @param showProgress Logical. Defaults to `TRUE` display progress bar
+#' @template simplified
+#' @template showProgress
+
 #'
 #' @return An `"sf" "data.frame"` object
 #'
@@ -38,6 +35,8 @@ read_municipality <-
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="municipality", year=year, simplified=simplified)
 
+  # check if download failed
+  if (is.null(temp_meta)) { return(invisible(NULL)) }
 
 # BLOCK 2.1 From 1872 to 1991  ----------------------------
 
@@ -50,8 +49,11 @@ read_municipality <-
       # download gpkg
       temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
 
+      # check if download failed
+      if (is.null(temp_sf)) { return(invisible(NULL)) }
+
     # if code_muni=="all", simply return the full data set
-      if( is.null(code_muni) | code_muni=="all"){ message("Loading data for the whole country\n")
+      if( is.null(code_muni) | code_muni=="all"){
         return(temp_sf)
         }
 
@@ -100,17 +102,21 @@ read_municipality <-
 # 2.2 Verify code_muni Input
 
   # if code_muni=="all", read the entire country
-    if(code_muni=="all"){ message("Loading data for the whole country. This might take a few minutes.\n")
+    if(code_muni=="all"){
 
       # list paths of files to download
       file_url <- as.character(temp_meta$download_path)
 
       # download files
       temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
+
+      # check if download failed
+      if (is.null(temp_sf)) { return(invisible(NULL)) }
+
       return(temp_sf)
     }
 
-  else if( !(substr(x = code_muni, 1, 2) %in% temp_meta$code) & !(substr(x = code_muni, 1, 2) %in% temp_meta$code_abrev)){
+  else if( !(substr(x = code_muni, 1, 2) %in% temp_meta$code) & !(substr(x = code_muni, 1, 2) %in% temp_meta$code_abbrev)){
 
       stop("Error: Invalid Value to argument code_muni.")
 
@@ -118,10 +124,13 @@ read_municipality <-
 
     # list paths of files to download
     if (is.numeric(code_muni)){ file_url <- as.character(subset(temp_meta, code==substr(code_muni, 1, 2))$download_path) }
-    if (is.character(code_muni)){ file_url <- as.character(subset(temp_meta, code_abrev==substr(code_muni, 1, 2))$download_path) }
+    if (is.character(code_muni)){ file_url <- as.character(subset(temp_meta, code_abbrev==substr(code_muni, 1, 2))$download_path) }
 
     # download files
     sf <- download_gpkg(file_url, progress_bar = showProgress)
+
+    # check if download failed
+    if (is.null(sf)) { return(invisible(NULL)) }
 
     # input is a state code
     if(nchar(code_muni)==2){

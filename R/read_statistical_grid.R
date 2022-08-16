@@ -5,12 +5,14 @@
 #'
 #' @param year Year of the data. Defaults to 2010. The only year available thus
 #'             far is 2010.
-#' @param code_grid If two-letter abbreviation of a state is passed, the function
-#'                  will load all grid quadrants that intersect with that state.
-#'                  If `code_grid="all"`, the grid of the whole country will be
-#'                  loaded. Users may also pass a 7-digit code of a grid quadrant
-#'                  to load an specific quadrant.
-#' @param showProgress Logical. Defaults to `TRUE` display progress bar
+#' @param code_grid If two-letter abbreviation or two-digit code of a state is
+#'                  passed, the function will load all grid quadrants that
+#'                  intersect with that state. If `code_grid="all"`, the grid of
+#'                  the whole country will be loaded. Users may also pass a
+#'                  grid quadrant id to load an specific quadrant. Quadrant ids
+#'                  can be consulted at `geobr::grid_state_correspondence_table`.
+#' @template showProgress
+#'
 #'
 #' @return An `"sf" "data.frame"` object
 #'
@@ -27,6 +29,9 @@ read_statistical_grid <- function(code_grid, year=2010, showProgress=TRUE){ # no
 
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="statistical_grid", year=year, simplified=F)
+
+  # check if download failed
+  if (is.null(temp_meta)) { return(invisible(NULL)) }
 
   # load correspondence table
   # data("grid_state_correspondence_table", envir=environment())
@@ -45,6 +50,10 @@ read_statistical_grid <- function(code_grid, year=2010, showProgress=TRUE){ # no
 
       # download files
       temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
+
+      # check if download failed
+      if (is.null(temp_sf)) { return(invisible(NULL)) }
+
       return(temp_sf)
       }
 
@@ -75,6 +84,10 @@ read_statistical_grid <- function(code_grid, year=2010, showProgress=TRUE){ # no
 
       # download gpkg
       temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
+
+      # check if download failed
+      if (is.null(temp_sf)) { return(invisible(NULL)) }
+
       return(temp_sf)
       }
 
@@ -89,6 +102,10 @@ read_statistical_grid <- function(code_grid, year=2010, showProgress=TRUE){ # no
 
     # download files
     temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
+
+    # check if download failed
+    if (is.null(temp_sf)) { return(invisible(NULL)) }
+
     return(temp_sf)
     }
 

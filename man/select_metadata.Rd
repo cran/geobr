@@ -17,21 +17,13 @@ select_metadata(geography, year = NULL, simplified = NULL)
 Select metadata
 }
 \examples{
-\donttest{
+\dontrun{ if (interactive()) {
 
 library(geobr)
 
 df <- download_metadata()
 
-}
+}}
 
 }
-\seealso{
-Other support functions: 
-\code{\link{check_connection}()},
-\code{\link{download_gpkg}()},
-\code{\link{load_gpkg}()},
-\code{\link{select_data_type}()},
-\code{\link{select_year_input}()}
-}
-\concept{support functions}
+\keyword{internal}

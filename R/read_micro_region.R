@@ -8,12 +8,8 @@
 #' two-letter uppercase abbreviation of a state is passed, (e.g. 33 or "RJ") the
 #' function will load all micro regions of that state. If `code_micro="all"`, all
 #' micro regions of the country are loaded.
-#' @param simplified Logic `FALSE` or `TRUE`, indicating whether the function
-#' returns the data set with original' resolution or a data set with 'simplified'
-#' borders. Defaults to `TRUE`. For spatial analysis and statistics users should
-#' set `simplified = FALSE`. Borders have been simplified by removing vertices of
-#' borders using `sf::st_simplify()` preserving topology with a `dTolerance` of 100.
-#' @param showProgress Logical. Defaults to `TRUE` display progress bar
+#' @template simplified
+#' @template showProgress
 #'
 #' @return An `"sf" "data.frame"` object
 #'
@@ -35,10 +31,13 @@ read_micro_region <- function(code_micro="all", year=2010, simplified=TRUE, show
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="micro_region", year=year, simplified=simplified)
 
+  # check if download failed
+  if (is.null(temp_meta)) { return(invisible(NULL)) }
+
   # Verify code_micro input
 
   # if code_micro=="all", read the entire country
-  if(code_micro=="all"){ message("Loading data for the whole country. This might take a few minutes.\n")
+  if(code_micro=="all"){
 
     # list paths of files to download
     file_url <- as.character(temp_meta$download_path)
@@ -48,7 +47,7 @@ read_micro_region <- function(code_micro="all", year=2010, simplified=TRUE, show
     return(temp_sf)
   }
 
-  if( !(substr(x = code_micro, 1, 2) %in% temp_meta$code) & !(substr(x = code_micro, 1, 2) %in% temp_meta$code_abrev)){
+  if( !(substr(x = code_micro, 1, 2) %in% temp_meta$code) & !(substr(x = code_micro, 1, 2) %in% temp_meta$code_abbrev)){
 
     stop("Error: Invalid Value to argument code_micro.")
 
@@ -56,7 +55,7 @@ read_micro_region <- function(code_micro="all", year=2010, simplified=TRUE, show
 
     # list paths of files to download
     if (is.numeric(code_micro)){ file_url <- as.character(subset(temp_meta, code==substr(code_micro, 1, 2))$download_path) }
-    if (is.character(code_micro)){ file_url <- as.character(subset(temp_meta, code_abrev==substr(code_micro, 1, 2))$download_path) }
+    if (is.character(code_micro)){ file_url <- as.character(subset(temp_meta, code_abbrev==substr(code_micro, 1, 2))$download_path) }
 
 
     # download files

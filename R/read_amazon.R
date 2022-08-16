@@ -6,12 +6,8 @@
 #' Ministry of Environment (MMA) and can be found at "http://mapas.mma.gov.br/i3geo/datadownload.htm".
 #'
 #' @param year A date number in YYYY format. Defaults to `2012`
-#' @param simplified Logic `FALSE` or `TRUE`, indicating whether the function
-#' returns the data set with original' resolution or a data set with 'simplified'
-#' borders. Defaults to `TRUE`. For spatial analysis and statistics users should
-#' set `simplified = FALSE`. Borders have been simplified by removing vertices of
-#' borders using `sf::st_simplify()` preserving topology with a `dTolerance` of 100.
-#' @param showProgress Logical. Defaults to `TRUE` display progress bar
+#' @template simplified
+#' @template showProgress
 #'
 #' @return An `"sf" "data.frame"` object
 #'
@@ -25,6 +21,9 @@ read_amazon <- function(year=2012, simplified=TRUE, showProgress=TRUE){
 
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="amazonia_legal", year=year, simplified=simplified)
+
+  # # check if download failed
+  # if (is.null(temp_meta)) { return(invisible(NULL)) }
 
   # list paths of files to download
   file_url <- as.character(temp_meta$download_path)

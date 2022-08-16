@@ -8,12 +8,8 @@
 #' the function will load all weighting areas of that state. If `code_weighting="all"`,
 #' all weighting areas of the country are loaded.
 #' @param year Year of the data. Defaults to `2010`
-#' @param simplified Logic `FALSE` or `TRUE`, indicating whether the function returns
-#' the data set with 'original' resolution or a data set with 'simplified' borders.
-#' Defaults to `TRUE`. For spatial analysis and statistics users should set
-#' `simplified = FALSE`. Borders have been simplified by removing vertices of
-#' borders using `st_simplify{sf}` preserving topology with a `dTolerance` of 100.
-#' @param showProgress Logical. Defaults to `TRUE` display progress bar
+#' @template simplified
+#' @template showProgress
 #'
 #' @return An `"sf" "data.frame"` object
 #'
@@ -40,6 +36,9 @@ read_weighting_area <- function(code_weighting="all", year=2010, simplified=TRUE
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="weighting_area", year=year, simplified=simplified)
 
+  # check if download failed
+  if (is.null(temp_meta)) { return(invisible(NULL)) }
+
   # Verify code_weighting input
         # if code_weighting=="all", read the entire country
         if(code_weighting=="all"){ message("Loading data for the whole country. This might take a few minutes.\n")
@@ -49,21 +48,28 @@ read_weighting_area <- function(code_weighting="all", year=2010, simplified=TRUE
 
         # download files
         temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
+
+        # check if download failed
+        if (is.null(temp_sf)) { return(invisible(NULL)) }
+
         return(temp_sf)
 
       }
 
-  else if( !(substr(x = code_weighting, 1, 2) %in% temp_meta$code) & !(substr(x = code_weighting, 1, 2) %in% temp_meta$code_abrev)){
+  else if( !(substr(x = code_weighting, 1, 2) %in% temp_meta$code) & !(substr(x = code_weighting, 1, 2) %in% temp_meta$code_abbrev)){
       stop("Error: Invalid Value to argument code_weighting.")
 
   } else {
 
     # list paths of files to download
       if (is.numeric(code_weighting)){ file_url <- as.character(subset(temp_meta, code==substr(code_weighting, 1, 2))$download_path) }
-      if (is.character(code_weighting)){ file_url <- as.character(subset(temp_meta, code_abrev==substr(code_weighting, 1, 2))$download_path) }
+      if (is.character(code_weighting)){ file_url <- as.character(subset(temp_meta, code_abbrev==substr(code_weighting, 1, 2))$download_path) }
 
     # download files
     temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
+
+    # check if download failed
+    if (is.null(temp_sf)) { return(invisible(NULL)) }
 
     # return whole state
     if(nchar(code_weighting)==2){

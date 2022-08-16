@@ -11,6 +11,7 @@
 #' @importFrom utils "tail"
 #' @importFrom data.table "%like%"
 #' @importFrom curl "has_internet"
+#' @importFrom methods is
 
 
 
@@ -28,7 +29,7 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c('brazil_2010',
                                                         'code_weighting_area',
                                                         'code_muni',
                                                         'code_state',
-                                                        'code_abrev',
+                                                        'code_abbrev',
                                                         'abbrev_state',
                                                         'code_region',
                                                         'name_region',
