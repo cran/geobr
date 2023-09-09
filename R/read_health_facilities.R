@@ -14,17 +14,19 @@
 #' column `data_source`. Periodically the coordinates are revised with the
 #' objective of improving the quality of the data." The date of the last data
 #' update is registered in the database in the columns `date_update` and
-#' `year_update`. More information available at \url{https://dados.gov.br/dataset?q=CNES}.
+#' `year_update`. More information in the CNES data set available at \url{https://dados.gov.br/}.
 #' These data use Geodetic reference system "SIRGAS2000" and CRS(4674).
 #' @template showProgress
 #'
 #' @return An `"sf" "data.frame"` object
 #'
 #' @export
-#' @examples \dontrun{ if (interactive()) {
+#' @family area functions
+#'
+#' @examplesIf identical(tolower(Sys.getenv("NOT_CRAN")), "true")
 #' # Read all health facilities of the whole country
 #' h <- read_health_facilities()
-#' }}
+#'
 read_health_facilities <- function( showProgress=TRUE ){
 
   # Get metadata with data url addresses
@@ -35,6 +37,10 @@ read_health_facilities <- function( showProgress=TRUE ){
 
   # download files
     temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
-    return(temp_sf)
+
+  # check if download failed
+  if (is.null(temp_sf)) { return(invisible(NULL)) }
+
+  return(temp_sf)
 
     }

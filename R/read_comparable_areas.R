@@ -8,8 +8,10 @@
 #' \doi{10.1590/0101-416147182phe}{Philipp Ehrl}, and translated
 #' into `R` by the `geobr` team.
 #'
-#' @param start_year Numeric. Start year to the period.
-#' @param end_year Numeric. End year to the period. (defaults to 2010)
+#' @param start_year Numeric. Start year to the period in the YYYY format.
+#'        Defaults TO `1970`.
+#' @param end_year Numeric. End year to the period in the YYYY format. Defaults
+#'        to `2010`.
 #' @template simplified
 #' @template showProgress
 #'
@@ -23,11 +25,11 @@
 #'   47(1), 215-229. https://doi.org/10.1590/0101-416147182phe
 #'
 #' @export
-#' @family general area functions
-#' @examples \dontrun{ if (interactive()) {
+#' @family area functions
 #'
+#' @examplesIf identical(tolower(Sys.getenv("NOT_CRAN")), "true")
 #'   amc <- read_comparable_areas(start_year=1970, end_year=2010)
-#'}}
+#'
 read_comparable_areas <- function(start_year=1970, end_year=2010, simplified=TRUE, showProgress=TRUE){
 
   # tests
@@ -54,6 +56,10 @@ read_comparable_areas <- function(start_year=1970, end_year=2010, simplified=TRU
 
   # download files
   temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
+
+  # check if download failed
+  if (is.null(temp_sf)) { return(invisible(NULL)) }
+
   return(temp_sf)
 
 }

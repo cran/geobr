@@ -43,12 +43,14 @@ muni <- read_municipality(
   showProgress = FALSE
   )
 
-plot(muni['name_muni'])
+ggplot() + 
+  geom_sf(data = muni, color=NA, fill = '#1ba185') +
+  theme_void()
 
 ## ----eval=TRUE, message=FALSE, warning=FALSE, results='hide'------------------
 # All municipalities in the state of Minas Gerais
-muni <- read_municipality(code_muni= "MG", 
-                          year=2007,
+muni <- read_municipality(code_muni = "MG", 
+                          year = 2007,
                           showProgress = FALSE)
 
 # All census tracts in the state of Rio de Janeiro
@@ -63,13 +65,13 @@ head(muni)
 ## ----eval=TRUE, message=FALSE, warning=FALSE----------------------------------
 # read all intermediate regions
 inter <- read_intermediate_region(
-  year=2017,
+  year = 2017,
   showProgress = FALSE
   )
 
 # read all states
 states <- read_state(
-  year=2019, 
+  year = 2019, 
   showProgress = FALSE
   )
 
@@ -132,6 +134,40 @@ ggplot() +
     no_axis
 
 
-## ----life expectancy states, eval=FALSE, echo=FALSE, message=FALSE, out.width='100%'----
-#  knitr::include_graphics("https://github.com/ipeaGIT/geobr/blob/master/r-package/inst/img/life_expect_states.png?raw=true")
+## ---- eval = TRUE-------------------------------------------------------------
+library(censobr)
+
+hs <- read_households(year = 2010, 
+                      showProgress = FALSE)
+
+
+## ---- eval = TRUE, warning = FALSE--------------------------------------------
+esg <- hs |> 
+        collect() |>
+        group_by(code_muni) |>                                             # (a)
+        summarize(rede = sum(V0010[which(V0207=='1')]),                    # (b)
+                  total = sum(V0010)) |>                                   # (b)
+        mutate(cobertura = rede / total) |>                                # (c)
+        collect()                                                          # (d)
+
+head(esg)
+
+## ---- eval = TRUE, warning = FALSE--------------------------------------------
+# download municipality geometries
+muni_sf <- geobr::read_municipality(year = 2010,
+                                    showProgress = FALSE)
+
+# merge data
+muni_sf$code_muni <- as.character(muni_sf$code_muni)
+esg_sf <- left_join(muni_sf, esg, by = 'code_muni')
+
+# plot map
+ggplot() +
+  geom_sf(data = esg_sf, aes(fill = cobertura), color=NA) +
+  labs(title = "Share of households connected to a sewage network") +
+  scale_fill_distiller(palette = "Greens", direction = 1, 
+                       name='Share of\nhouseholds', 
+                       labels = scales::percent) +
+  theme_void()
+
 
