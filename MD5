@@ -1,4 +1,4 @@
-4ff5042ec3a75c456fbf08d0ddbf9f6c *DESCRIPTION
+9ead188c7ce9733c41e3c95a22fb1bd0 *DESCRIPTION
 fe38c920d29611a2e7fa62063397a33d *LICENSE
 b3eb177f515f5d2b6ef2a712f644cc53 *NAMESPACE
 b2fadb4a6722f7a42912c9095fe15c78 *R/cep_to_state.R
@@ -30,7 +30,7 @@ d0ccfd672aee71cdf41b70db4390c65b *R/read_region.R
 edd9179a639d2f26c57c295af4025863 *R/read_schools.R
 bfcd5430ab160bbe96a02ed19fac6de4 *R/read_semiarid.R
 3a17810963c73c19f8845b9c74eda7d9 *R/read_state.R
-61479f5c6a5d92eb9f0a5b8a6f12aa29 *R/read_statistical_grid.R
+9392e379d1485ba0e28f424441ad599f *R/read_statistical_grid.R
 3bc179db901ff6fd0b86c44fc2d6fd7c *R/read_urban_area.R
 eef9a1c5cf08351ddd1ffb2c731b1b2d *R/read_urban_concentrations.R
 b33509c23ae1e189b775bf4effd787b0 *R/read_weighting_area.R
@@ -38,8 +38,8 @@ a3c33c2b665c2cd91fc000a6a4cf9179 *R/utils.R
 2836b2c5db38c9819380bd093383d89d *build/partial.rdb
 ee45f51c89193ec4bca3c00d37c2ec7f *build/vignette.rds
 fadda53e3a4be9a7f879820022d3836a *data/grid_state_correspondence_table.RData
-00cb2dfaba2691e64aa7eb59a42e2116 *inst/doc/intro_to_geobr.R
-6cd40ec5012ad5fd43f81b6a4365f812 *inst/doc/intro_to_geobr.Rmd
+15f947b38d3be80cbea70a6186c9f764 *inst/doc/intro_to_geobr.R
+4a50df568fb39b80763f5f58a9fff969 *inst/doc/intro_to_geobr.Rmd
 e7308768557e2ecaea62d2ee8256b310 *inst/doc/intro_to_geobr.html
 9dc091505fb42a67ce6c5b1dd5244942 *inst/extdata/br_states_lifexpect2017.csv
 0dc278e693a32d99abc790c107d5f262 *inst/img/life_expect_states.png
@@ -86,7 +86,7 @@ da49146d34a36749727320c52cdfa064 *man/read_region.Rd
 75a8adc80e93fa0e3264b4c2d5413a9f *man/read_schools.Rd
 0742095c26b3901156c9c295a75d174d *man/read_semiarid.Rd
 f374f69fe6636a8c12a2855bcaf70170 *man/read_state.Rd
-1de98af44ebeca9467a0be5732cbe04c *man/read_statistical_grid.Rd
+185be3de00ab9554fce49859344c236a *man/read_statistical_grid.Rd
 44943708ec27f27fa0b326224fb7edc4 *man/read_urban_area.Rd
 f22c32d12c2b6da01eb92f813495410b *man/read_urban_concentrations.Rd
 99bd2a64ccc76f5b428adf9906f647f0 *man/read_weighting_area.Rd
@@ -95,7 +95,7 @@ f22c32d12c2b6da01eb92f813495410b *man/read_urban_concentrations.Rd
 508c1a8c94ba91fda88fd4e8ef1334f3 *man/select_data_type.Rd
 3a85a228b41f6cd7bbd2c15e2d68de63 *man/select_metadata.Rd
 e04372aed5dcb4ee0fce8d4d2b5d4d24 *man/select_year_input.Rd
-ad4f3dd1f0ea169c2622d1d6de232b53 *tests/tests_rafa/test_rafa.R
+3dc9ec8bd312c0b80fb0eddaf2d13de7 *tests/tests_rafa/test_rafa.R
 947be571ed02028ba26ea1284f3a43ac *tests/tests_rafa/tests_data_formats.R
 d80e53a47e53c784fe062795bab5eb74 *tests/testthat.R
 73195d105cd966f84d50b18cd5c5ffb4 *tests/testthat/test-cep_to_state.R
@@ -132,6 +132,6 @@ febe842a8903b4c485552a39f8e54a48 *tests/testthat/test-read_statistical_grid.R
 bc15b25ad9625d0326b54152b8d24b1a *tests/testthat/test-read_urban_area.R
 6d112de645c0f61ebf3bb6db3a7b0fc6 *tests/testthat/test-read_urban_concentrations.R
 e8a7aaa30b6b52ec13aea5ef03d55cda *tests/testthat/test-read_weighting_area.R
-6cd40ec5012ad5fd43f81b6a4365f812 *vignettes/intro_to_geobr.Rmd
+4a50df568fb39b80763f5f58a9fff969 *vignettes/intro_to_geobr.Rmd
 739487dc3545ed87bb46bedd24432226 *vignettes/pandoc32e043bebd3.html
 739487dc3545ed87bb46bedd24432226 *vignettes/pandoc3d64491379ea.html

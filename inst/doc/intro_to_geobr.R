@@ -1,10 +1,18 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   eval = identical(tolower(Sys.getenv("NOT_CRAN")), "true"),
   out.width = "100%"
 )
+
+
+use_suggested_pkgs <- c((requireNamespace("dplyr")), 
+                        (requireNamespace("scales")), 
+                        (requireNamespace("ggplot2")), 
+                        (requireNamespace("censobr")))
+
+use_suggested_pkgs <- all(use_suggested_pkgs)
 
 ## ----eval=FALSE, message=FALSE, warning=FALSE---------------------------------
 #  # From CRAN
@@ -15,20 +23,20 @@ knitr::opts_chunk$set(
 #  devtools::install_github("ipeaGIT/geobr", subdir = "r-package")
 #  
 
-## ----eval=TRUE, message=FALSE, warning=FALSE, results='hide'------------------
+## ----eval=use_suggested_pkgs, message=FALSE, warning=FALSE, results='hide'----
 library(geobr)
 library(ggplot2)
 library(sf)
 library(dplyr)
 
-## ----eval=TRUE, message=FALSE, warning=FALSE----------------------------------
+## ----eval=use_suggested_pkgs, message=FALSE, warning=FALSE--------------------
 # Available data sets
 datasets <- list_geobr()
 
 head(datasets)
 
 
-## ----eval=TRUE, message=FALSE, warning=FALSE----------------------------------
+## ----eval=use_suggested_pkgs, message=FALSE, warning=FALSE--------------------
 # State of Sergige
 state <- read_state(
   code_state="SE",
@@ -77,7 +85,7 @@ states <- read_state(
 
 head(states)
 
-## ----eval=TRUE, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8, fig.align = "center"----
+## ----eval=use_suggested_pkgs, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8, fig.align = "center"----
 # Remove plot axis
 no_axis <- theme(axis.title=element_blank(),
                  axis.text=element_blank(),
@@ -91,10 +99,7 @@ ggplot() +
   no_axis
 
 
-## ----states br, eval=FALSE, echo=FALSE, message=FALSE, out.width='100%'-------
-#  knitr::include_graphics("https://github.com/ipeaGIT/geobr/blob/master/r-package/inst/img/states_br.png?raw=true")
-
-## ----eval=TRUE, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8, fig.align = "center"----
+## ----eval=use_suggested_pkgs, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8, fig.align = "center"----
 
 # Download all municipalities of Rio
 all_muni <- read_municipality(
@@ -111,10 +116,7 @@ ggplot() +
   no_axis
 
 
-## ----munis rio, eval=FALSE, echo=FALSE, message=FALSE, out.width='100%'-------
-#  knitr::include_graphics("https://github.com/ipeaGIT/geobr/blob/master/r-package/inst/img/munis_rj.png?raw=true")
-
-## ----eval=TRUE, message=FALSE, warning=FALSE, results='hide'------------------
+## ----eval=use_suggested_pkgs, message=FALSE, warning=FALSE, results='hide'----
 # Read data.frame with life expectancy data
 df <- utils::read.csv(system.file("extdata/br_states_lifexpect2017.csv", package = "geobr"), encoding = "UTF-8")
 
@@ -125,7 +127,7 @@ df$uf <- tolower(df$uf)
 states <- dplyr::left_join(states, df, by = c("name_state" = "uf"))
 
 
-## ----eval=TRUE, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8, fig.align = "center"----
+## ----eval=use_suggested_pkgs, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8, fig.align = "center"----
 ggplot() +
   geom_sf(data=states, aes(fill=ESPVIDA2017), color= NA, size=.15) +
     labs(subtitle="Life Expectancy at birth, Brazilian States, 2014", size=8) +
@@ -134,14 +136,14 @@ ggplot() +
     no_axis
 
 
-## ---- eval = TRUE-------------------------------------------------------------
+## ----eval = use_suggested_pkgs------------------------------------------------
 library(censobr)
 
 hs <- read_households(year = 2010, 
                       showProgress = FALSE)
 
 
-## ---- eval = TRUE, warning = FALSE--------------------------------------------
+## ----eval = use_suggested_pkgs, warning = FALSE-------------------------------
 esg <- hs |> 
         collect() |>
         group_by(code_muni) |>                                             # (a)
@@ -152,7 +154,7 @@ esg <- hs |>
 
 head(esg)
 
-## ---- eval = TRUE, warning = FALSE--------------------------------------------
+## ----eval = use_suggested_pkgs, warning = FALSE-------------------------------
 # download municipality geometries
 muni_sf <- geobr::read_municipality(year = 2010,
                                     showProgress = FALSE)
