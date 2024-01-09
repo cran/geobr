@@ -78,7 +78,7 @@ system.time( ct4 <-  st_read_parquet("ct_sf.parquet") )
 ### convert to ASCII characters  -------------------------
 
 
-gtools::ASCIIfy('Belém')
+gtools::ASCIIfy('Espírito Santo')
 gtools::ASCIIfy('São Paulo')
 gtools::ASCIIfy('Rondônia')
 
@@ -554,10 +554,7 @@ rhub::check_for_cran(show_status = FALSE)
 # submit to CRAN -----------------
 usethis::use_cran_comments('teste 2222, , asdadsad')
 
-
-Sys.setenv(NOT_CRAN = "true")
 devtools::submit_cran()
-
 
 
 
