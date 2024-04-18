@@ -132,6 +132,7 @@ ggplot() +
 
 ## -----------------------------------------------------------------------------
 library(censobr)
+library(arrow)
 
 hs <- read_households(year = 2010, 
                       showProgress = FALSE)
