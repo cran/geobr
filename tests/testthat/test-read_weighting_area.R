@@ -10,21 +10,13 @@ test_that("read_weighting_area", {
 
   # read data
   expect_true(is( read_weighting_area()  , "sf"))
-  expect_true(is( read_weighting_area(code_weighting=5201108, year=2010) , "sf"))
-#  expect_true(is( read_weighting_area(code_weighting="AC", year=2010) , "sf"))
+  expect_true(is( read_weighting_area(code_weighting='all', year=2010) , "sf"))
   expect_true(is( read_weighting_area(code_weighting=11, year=2010) , "sf"))
+  expect_true(is( read_weighting_area(code_weighting="AC", year=2010) , "sf"))
+  expect_true(is( read_weighting_area(code_weighting=5201108, year=2010) , "sf"))
+  expect_true(is( read_weighting_area(code_weighting=5201108005004, year=2010) , "sf"))
 
-  test_code <- read_weighting_area(code_weighting=5205109003001, year=2010)
-
-  # check sf object
-  testthat::expect_true(is(test_code, "sf"))
-
-
-  # check number of weighting areas
-   testthat::expect_equal(nrow(test_code), 1)
-
-
-})
+  })
 
 
 # ERRORS

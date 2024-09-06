@@ -23,7 +23,7 @@
 "_PACKAGE"
 
 ## quiets concerns of R CMD check re: the .'s that appear in pipelines
-if(getRversion() >= "2.15.1")  utils::globalVariables(c('brazil_2010',
+if(getRversion() >= "2.15.1")  utils::globalVariables(c('brazil_2010', # nocov star
                                                         'grid_state_correspondence_table',
                                                         'data',
                                                         'geo',
@@ -42,9 +42,10 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c('brazil_2010',
                                                         'temp_meta',
                                                         'group_by',
                                                         'showProgress',
-                                                        'year'
-                                                        ))
+                                                        'year',
+                                                        'url2'
+                                                        )) # nocov end
 
-.onLoad <- function(lib, pkg) {
+.onLoad <- function(lib, pkg) { # nocov star
   requireNamespace("sf")
 } # nocov end

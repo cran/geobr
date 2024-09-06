@@ -11,6 +11,7 @@
 #'        country.
 #' @template simplified
 #' @template showProgress
+#' @template cache
 #'
 #' @return An `"sf" "data.frame"` object
 #'
@@ -28,7 +29,11 @@
 #' # Read all micro regions at a given year
 #'   micro <- read_micro_region(code_micro="all", year=2010)
 #'
-read_micro_region <- function(code_micro="all", year=2010, simplified=TRUE, showProgress=TRUE){
+read_micro_region <- function(code_micro = "all",
+                              year = 2010,
+                              simplified = TRUE,
+                              showProgress = TRUE,
+                              cache = TRUE){
 
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="micro_region", year=year, simplified=simplified)
@@ -37,48 +42,52 @@ read_micro_region <- function(code_micro="all", year=2010, simplified=TRUE, show
   if (is.null(temp_meta)) { return(invisible(NULL)) }
 
   # Verify code_micro input
+  if (!any(code_micro == 'all' |
+           code_micro %in% temp_meta$code |
+           substring(code_micro, 1, 2) %in% temp_meta$code |
+           code_micro %in% temp_meta$code_abbrev
+           )) {
+    stop("Error: Invalid Value to argument code_micro.")
+    }
 
-  # if code_micro=="all", read the entire country
-  if(code_micro=="all"){
-
-    # list paths of files to download
+  # get file url
+  if (code_micro=="all") {
     file_url <- as.character(temp_meta$download_path)
 
-    # download files
-    temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
+  } else if (is.numeric(code_micro)) { # if using numeric code_micro
+    file_url <- as.character(subset(temp_meta, code==substr(code_micro, 1, 2))$download_path)
 
-    # check if download failed
-    if (is.null(temp_sf)) { return(invisible(NULL)) }
-
-    return(temp_sf)
-  }
-
-  if( !(substr(x = code_micro, 1, 2) %in% temp_meta$code) & !(substr(x = code_micro, 1, 2) %in% temp_meta$code_abbrev)){
-
-    stop("Error: Invalid Value to argument code_micro.")
-
-  } else{
-
-    # list paths of files to download
-    if (is.numeric(code_micro)){ file_url <- as.character(subset(temp_meta, code==substr(code_micro, 1, 2))$download_path) }
-    if (is.character(code_micro)){ file_url <- as.character(subset(temp_meta, code_abbrev==substr(code_micro, 1, 2))$download_path) }
-
-
-    # download files
-    sf <- download_gpkg(file_url, progress_bar = showProgress)
-
-    # check if download failed
-    if (is.null(sf)) { return(invisible(NULL)) }
-
-    if(nchar(code_micro)==2){
-      return(sf)
-
-    } else if(code_micro %in% sf$code_micro){    # Get micro region
-      x <- code_micro
-      sf <- subset(sf, code_micro==x)
-      return(sf)
-    } else{
-      stop("Error: Invalid Value to argument code_micro. There was no micro region with this code in this year")
+  } else if (is.character(code_micro)) { # if using chacracter code_abbrev
+    file_url <- as.character(subset(temp_meta, code_abbrev==substr(code_micro, 1, 2))$download_path)
     }
-  }
+
+  # download gpkg
+  temp_sf <- download_gpkg(file_url = file_url,
+                           showProgress = showProgress,
+                           cache = cache)
+
+  # check if download failed
+  if (is.null(temp_sf)) { return(invisible(NULL)) }
+
+  ## FILTERS
+  y <- code_micro
+
+  # input "all"
+  if(code_micro=="all"){
+
+    # abbrev_state
+  } else if(code_micro %in% temp_sf$abbrev_state){
+    temp_sf <- subset(temp_sf, abbrev_state == y)
+
+    # code_state
+  } else if(code_micro %in% temp_sf$code_state){
+    temp_sf <- subset(temp_sf, code_state == y)
+
+    # code_micro
+  } else if(code_micro %in% temp_sf$code_micro){
+    temp_sf <- subset(temp_sf, code_micro == y)
+
+  } else {stop(paste0("Error: Invalid Value to argument 'code_micro'",collapse = " "))}
+
+  return(temp_sf)
 }

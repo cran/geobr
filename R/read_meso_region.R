@@ -11,6 +11,7 @@
 #'        regions of the country.
 #' @template simplified
 #' @template showProgress
+#' @template cache
 #'
 #' @return An `"sf" "data.frame"` object
 #'
@@ -31,7 +32,8 @@
 read_meso_region <- function(code_meso = "all",
                              year = 2010,
                              simplified = TRUE,
-                             showProgress = TRUE){
+                             showProgress = TRUE,
+                             cache = TRUE){
 
   # Get metadata with data url addresses
   temp_meta <- select_metadata(geography="meso_region",
@@ -41,51 +43,53 @@ read_meso_region <- function(code_meso = "all",
   # check if download failed
   if (is.null(temp_meta)) { return(invisible(NULL)) }
 
-# Verify code_meso input
+  # Verify code_meso input
+  if (!any(code_meso == 'all' |
+           code_meso %in% temp_meta$code |
+           substring(code_meso, 1, 2) %in% temp_meta$code |
+           code_meso %in% temp_meta$code_abbrev
+  )) {
+    stop("Error: Invalid Value to argument code_meso.")
+  }
 
-  # if code_meso=="all", read the entire country
-  if(code_meso=="all"){
-
-    # list paths of files to download
+  # get file url
+  if (code_meso=="all") {
     file_url <- as.character(temp_meta$download_path)
 
-    # download files
-    temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
+  } else if (is.numeric(code_meso)) { # if using numeric code_meso
+    file_url <- as.character(subset(temp_meta, code==substr(code_meso, 1, 2))$download_path)
 
-    # check if download failed
-    if (is.null(temp_sf)) { return(invisible(NULL)) }
-
-    return(temp_sf)
-
+  } else if (is.character(code_meso)) { # if using chacracter code_abbrev
+    file_url <- as.character(subset(temp_meta, code_abbrev==substr(code_meso, 1, 2))$download_path)
   }
 
-  if( !(substr(x = code_meso, 1, 2) %in% temp_meta$code) & !(substr(x = code_meso, 1, 2) %in% temp_meta$code_abbrev)){
-    stop("Error: Invalid Value to argument code_meso.")
+  # download gpkg
+  temp_sf <- download_gpkg(file_url = file_url,
+                           showProgress = showProgress,
+                           cache = cache)
 
-  } else{
+  # check if download failed
+  if (is.null(temp_sf)) { return(invisible(NULL)) }
 
-    # list paths of files to download
-    if (is.numeric(code_meso)){ file_url <- as.character(subset(temp_meta, code==substr(code_meso, 1, 2))$download_path) }
-    if (is.character(code_meso)){ file_url <- as.character(subset(temp_meta, code_abbrev==substr(code_meso, 1, 2))$download_path) }
+  ## FILTERS
+  y <- code_meso
 
+  # input "all"
+  if (code_meso=="all" | nchar(code_meso)==2) {
 
+  #   # abbrev_state
+  # } else if (code_meso %in% temp_sf$abbrev_state){
+  #   temp_sf <- subset(temp_sf, abbrev_state == y)
+  #
+  #   # code_state
+  # } else if (code_meso %in% substring(temp_sf$code_meso,1,2)) {
+  #   temp_sf <- subset(temp_sf, substring(code_meso,1,2) == y)
 
-    # download files
-    temp_sf <- download_gpkg(file_url, progress_bar = showProgress)
+    # code_meso
+  } else if (code_meso %in% temp_sf$code_meso) {
+    temp_sf <- subset(temp_sf, code_meso == y)
 
-    # check if download failed
-    if (is.null(temp_sf)) { return(invisible(NULL)) }
+  } else {stop(paste0("Error: Invalid Value to argument 'code_meso'",collapse = " "))}
 
-
-    if(nchar(code_meso)==2){
-      return(temp_sf)
-
-    } else if(code_meso %in% temp_sf$code_meso){    # Get meso region
-      x <- code_meso
-      temp_sf <- subset(temp_sf, code_meso==x)
-      return(temp_sf)
-    } else{
-      stop("Error: Invalid Value to argument code_meso.")
-    }
-  }
+  return(temp_sf)
 }

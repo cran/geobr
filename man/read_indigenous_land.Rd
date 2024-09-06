@@ -4,7 +4,12 @@
 \alias{read_indigenous_land}
 \title{Download spatial data of indigenous lands in Brazil}
 \usage{
-read_indigenous_land(date = 201907, simplified = TRUE, showProgress = TRUE)
+read_indigenous_land(
+  date = 201907,
+  simplified = TRUE,
+  showProgress = TRUE,
+  cache = TRUE
+)
 }
 \arguments{
 \item{date}{Numeric. Date of the data in YYYYMM format. Defaults to \code{201907}.}
@@ -17,6 +22,12 @@ simplified by removing vertices of borders using \verb{st_simplify\{sf\}} preser
 topology with a \code{dTolerance} of 100.}
 
 \item{showProgress}{Logical. Defaults to \code{TRUE} display progress bar.}
+
+\item{cache}{Logical. Whether the function should read the data cached
+locally, which is faster. Defaults to \code{cache = TRUE}. By default,
+\code{geobr} stores data files in a temporary directory that exists only
+within each R session. If \code{cache = FALSE}, the function will download
+the data again and overwrite the local file.}
 }
 \value{
 An \verb{"sf" "data.frame"} object
@@ -25,7 +36,7 @@ An \verb{"sf" "data.frame"} object
 The data set covers the whole of Brazil and it includes indigenous lands from
 all ethnicities and in different stages of demarcation. The original data
 comes from the National Indian Foundation (FUNAI) and can be found at
-\url{http://www.funai.gov.br/index.php/shape}. Although original data is
+\url{https://www.gov.br/funai/pt-br/atuacao/terras-indigenas/geoprocessamento-e-mapas}. Although original data is
 updated monthly, the geobr package will only keep the data for a few months
 per year.
 }

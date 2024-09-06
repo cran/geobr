@@ -19,9 +19,9 @@ knitr::opts_chunk$set(
 
 ## ----message=FALSE, warning=FALSE, results='hide'-----------------------------
 library(geobr)
-library(ggplot2)
 library(sf)
 library(dplyr)
+library(ggplot2)
 
 ## ----message=FALSE, warning=FALSE---------------------------------------------
 # Available data sets
@@ -155,7 +155,6 @@ muni_sf <- geobr::read_municipality(year = 2010,
                                     showProgress = FALSE)
 
 # merge data
-muni_sf$code_muni <- as.character(muni_sf$code_muni)
 esg_sf <- left_join(muni_sf, esg, by = 'code_muni')
 
 # plot map
