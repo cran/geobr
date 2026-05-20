@@ -1,42 +1,50 @@
 #' Download spatial data of Brazil Regions
 #'
 #' @description
-#' Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
+#' Brazil macro regions
 #'
-#' @param year Numeric. Year of the data in YYYY format. Defaults to `2010`.
+#' @template year
 #' @template simplified
+#' @template output
 #' @template showProgress
 #' @template cache
+#' @template verbose
 #'
-#' @return An `"sf" "data.frame"` object
+#' @return An `"sf" "data.frame"` OR an `ArrowObject`
 #'
 #' @export
-#' @family area functions
 #'
 #' @examplesIf identical(tolower(Sys.getenv("NOT_CRAN")), "true")
 #' # Read specific year
-#' reg <- read_region(year=2018)
+#' reg <- read_region(year = 2023)
 #'
-read_region <- function(year = 2010,
+read_region <- function(year,
                         simplified = TRUE,
+                        output = "sf",
                         showProgress = TRUE,
-                        cache = TRUE){
+                        cache = TRUE,
+                        verbose = TRUE){
 
   # Get metadata with data url addresses
-  temp_meta <- select_metadata(geography="regions", year=year, simplified=simplified)
-
-  # list paths of files to download
-  file_url <- as.character(temp_meta$download_path)
+  temp_meta <- select_metadata(
+    geography = "regions",
+    year = year,
+    simplified = simplified,
+    verbose = verbose
+  )
 
   # download files
-  temp_sf <- download_gpkg(file_url = file_url,
-                           showProgress = showProgress,
-                           cache = cache)
+  temp_arrw <- download_parquet(
+    filename_to_download = temp_meta$file_name,
+    showProgress = showProgress,
+    cache = cache
+  )
 
   # check if download failed
-  if (is.null(temp_sf)) { return(invisible(NULL)) }
+  if (is.null(temp_arrw)) { return(invisible(NULL)) }
 
-  return(temp_sf)
+  # convert to sf
+  temp <- convert_output(temp_arrw, output)
+
+  return(temp)
 }
-
-

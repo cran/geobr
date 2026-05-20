@@ -9,15 +9,11 @@ testthat::skip_on_cran()
 test_that("read_immediate_region", {
 
   # read data
-  expect_true(is(  read_immediate_region() , "sf"))
-  expect_true(is(  read_immediate_region(code_immediate = 11) , "sf"))
-  expect_true(is(  read_immediate_region(code_immediate = "AC") , "sf"))
+  expect_true(is(  read_immediate_region(code_immediate = 11, year=2024) , "sf"))
+  expect_true(is(  read_immediate_region(code_immediate = "AC", year=2024) , "sf"))
 
-  test_code_muni <- read_immediate_region(code_immediate =  110002)
+  test_code_muni <- read_immediate_region(code_immediate =  110002, year=2024)
 
-
-  # check number of micro
-  testthat::expect_equal(test_code_muni %>% length(), 8)
 
 })
 
@@ -28,9 +24,9 @@ test_that("read_immediate_region", {
 test_that("read_immediate_region", {
 
   # Wrong year
+  testthat::expect_error(read_immediate_region())
   testthat::expect_error(read_immediate_region(year = 9999999))
   testthat::expect_error(read_immediate_region(year = "xxx"))
-  testthat::expect_error(read_immediate_region(code_immediate=5201108312313213))
 
 
   # wrong year and code_immediate

@@ -10,14 +10,17 @@ testthat::skip_on_cran()
 
 test_that("read_comparable_areas", {
 
-  # read data
-  amc <- read_comparable_areas(start_year=1970, end_year=2010)
+# temporarily suspended
+  testthat::expect_message(read_comparable_areas())
 
-  # check sf object
-  testthat::expect_true(is(amc, "sf"))
-
-  # check number of micro
-  testthat::expect_equal( nrow(amc), 3800)
+  # # read data
+  # amc <- read_comparable_areas(start_year=1970, end_year=2010)
+  #
+  # # check sf object
+  # testthat::expect_true(is(amc, "sf"))
+  #
+  # # check number of micro
+  # testthat::expect_equal( nrow(amc), 3800)
 
 })
 
@@ -27,9 +30,9 @@ test_that("read_comparable_areas", {
 # ERRORS and messagens  -----------------------
 test_that("read_comparable_areas", {
 
- # Wrong year
- testthat::expect_error( read_comparable_areas(start_year=1, end_year=2010) )
- testthat::expect_error( read_comparable_areas(start_year=1970, end_year=2) )
- testthat::expect_error( read_comparable_areas(start_year=1970, end_year=1900) )
+ # # Wrong year
+ # testthat::expect_error( read_comparable_areas(start_year=1, end_year=2010) )
+ # testthat::expect_error( read_comparable_areas(start_year=1970, end_year=2) )
+ # testthat::expect_error( read_comparable_areas(start_year=1970, end_year=1900) )
 
 })

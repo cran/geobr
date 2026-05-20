@@ -2,25 +2,28 @@
 % Please edit documentation in R/read_census_tract.R
 \name{read_census_tract}
 \alias{read_census_tract}
-\title{Download spatial data of census tracts of the Brazilian Population Census}
+\title{Download spatial data of census tracts}
 \usage{
 read_census_tract(
+  year,
   code_tract,
-  year = 2010,
   zone = "urban",
   simplified = TRUE,
+  output = "sf",
   showProgress = TRUE,
-  cache = TRUE
+  cache = TRUE,
+  verbose = TRUE
 )
 }
 \arguments{
+\item{year}{Numeric. Year of the data in YYYY format. It defaults to \code{NULL}
+and reads the data from the latest year available.}
+
 \item{code_tract}{The 7-digit code of a Municipality. If the two-digit code
 or a two-letter uppercase abbreviation of a state is passed, (e.g. 33
 or "RJ") the function will load all census tracts of that state. If
 \code{code_tract="all"}, the function downloads all census tracts of the
 country.}
-
-\item{year}{Numeric. Year of the data in YYYY format. Defaults to \code{2010}.}
 
 \item{zone}{For census tracts before 2010, 'urban' and 'rural' census tracts
 are separate data sets.}
@@ -32,6 +35,13 @@ statistics users should set \code{simplified = FALSE}. Borders have been
 simplified by removing vertices of borders using \verb{st_simplify\{sf\}} preserving
 topology with a \code{dTolerance} of 100.}
 
+\item{output}{String. Type of object returned by the function. Defaults to
+\code{"sf"}, which loads the data into memory as an sf object. Alternatively,
+\code{"duckdb"} returns a lazy spatial table backed by DuckDB via the
+duckspatial package, and \code{"arrow"} returns an Arrow dataset. Both
+\code{"duckdb"} and \code{"arrow"} support out-of-memory processing of large
+data sets.}
+
 \item{showProgress}{Logical. Defaults to \code{TRUE} display progress bar.}
 
 \item{cache}{Logical. Whether the function should read the data cached
@@ -39,33 +49,34 @@ locally, which is faster. Defaults to \code{cache = TRUE}. By default,
 \code{geobr} stores data files in a temporary directory that exists only
 within each R session. If \code{cache = FALSE}, the function will download
 the data again and overwrite the local file.}
+
+\item{verbose}{A logical. If \code{TRUE} (the default), the function prints
+informative messages and shows download progress bar. If \code{FALSE}, the
+function is silent.}
 }
 \value{
-An \verb{"sf" "data.frame"} object
+An \verb{"sf" "data.frame"} OR an \code{ArrowObject}
 }
 \description{
-Download spatial data of census tracts of the Brazilian Population Census
+Data of census tracts (setores censitários) of the Brazilian Population Census
 }
 \examples{
-\dontshow{if (identical(tolower(Sys.getenv("NOT_CRAN")), "true")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-# Read rural census tracts for years before 2007
-  c <- read_census_tract(code_tract=5201108, year=2000, zone="rural")
+\dontshow{if (identical(tolower(Sys.getenv("NOT_CRAN")), "true")) withAutoprint(\{ # examplesIf}
 
 # Read all census tracts of a state at a given year
-  c <- read_census_tract(code_tract=53, year=2010) # or
-  c <- read_census_tract(code_tract="DF", year=2010)
-  plot(c)
+c <- read_census_tract(year = 2022, code_tract = "DF")
 
 # Read all census tracts of a municipality at a given year
-  c <- read_census_tract(code_tract=5201108, year=2010)
-  plot(c)
+c <- read_census_tract(year = 2022, code_tract = 5201108)
 
 # Read all census tracts of the country at a given year
-  c <- read_census_tract(code_tract="all", year=2010)
+c <- read_census_tract(year = 2022, code_tract = "all")
+
+# Read rural census tracts for years before 2007
+c <- read_census_tract(
+  year = 2000,
+  code_tract = 5201108,
+  zone = "rural"
+  )
 \dontshow{\}) # examplesIf}
 }
-\seealso{
-Other general area functions: 
-\code{\link{read_conservation_units}()}
-}
-\concept{general area functions}

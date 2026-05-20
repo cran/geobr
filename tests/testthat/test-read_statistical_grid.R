@@ -7,10 +7,24 @@ skip_if(Sys.getenv("TEST_ONE") != "")
 
 test_that("read_statistical_grid", {
 
-  expect_true(is( read_statistical_grid(code_grid=39, year=2010) , "sf"))
-  expect_true(is( read_statistical_grid(code_grid="DF", year=2010) , "sf"))
+  temp <- read_statistical_grid(year=2010, code_muni="all", output = "arrow")
+  testthat::expect_true( nrow(temp) == 13286535 )
 
- # testthat::expect_message(read_statistical_grid(code_grid="all")) # TOO HEAVY
+  temp <- read_statistical_grid(year=2010, code_muni="AC", output = "arrow")
+  testthat::expect_true( nrow(temp) == 183695 )
+
+  temp <- read_statistical_grid(year=2010, code_muni=2927408, output = "arrow")
+  testthat::expect_true( nrow(temp) == 17254 )
+
+  testthat::expect_true(is(temp, "ArrowObject"))
+
+
+  temp <- read_statistical_grid(year=2010, code_muni=2927408, output = "duckdb")
+  testthat::expect_true(is(temp, "duckspatial_df"))
+
+  temp <- read_statistical_grid(year=2010, code_muni=2927408, output = "sf")
+
+  testthat::expect_true("sf"  %in% class(temp))
 
 
   })
@@ -22,12 +36,18 @@ test_that("read_statistical_grid", {
 
   # Wrong year and code
   testthat::expect_error(read_statistical_grid())
-  testthat::expect_error(read_statistical_grid(code_grid=NULL))
+  testthat::expect_error(read_statistical_grid(code_muni=NULL))
 
   # Wrong code
-  testthat::expect_error(read_statistical_grid(code_grid=9999999))
+  testthat::expect_error(read_statistical_grid(code_muni=9999999))
 
   # Wrong year
+  testthat::expect_error(read_statistical_grid(code_muni="AC"))
   testthat::expect_error(read_statistical_grid( year=9999999))
+
+  # Wrong output
+  testthat::expect_error(
+    read_statistical_grid(year=2022, code_muni="AC", output = "banana")
+    )
 
 })

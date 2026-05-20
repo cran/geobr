@@ -5,21 +5,24 @@
 \title{Download spatial data of micro regions}
 \usage{
 read_micro_region(
+  year,
   code_micro = "all",
-  year = 2010,
   simplified = TRUE,
+  output = "sf",
   showProgress = TRUE,
-  cache = TRUE
+  cache = TRUE,
+  verbose = TRUE
 )
 }
 \arguments{
+\item{year}{Numeric. Year of the data in YYYY format. It defaults to \code{NULL}
+and reads the data from the latest year available.}
+
 \item{code_micro}{5-digit code of a micro region. If the two-digit code or a
 two-letter uppercase abbreviation of a state is passed, (e.g. 33 or
 "RJ") the function will load all micro regions of that state. If
-\code{code_micro="all"} (Default), the function downloads all micro regions of the
-country.}
-
-\item{year}{Numeric. Year of the data in YYYY format. Defaults to \code{2010}.}
+\code{code_micro="all"} (Default), the function downloads all micro regions
+of the country.}
 
 \item{simplified}{Logic \code{FALSE} or \code{TRUE}, indicating whether the function
 should return the data set with 'original' spatial resolution or a data set
@@ -28,6 +31,13 @@ statistics users should set \code{simplified = FALSE}. Borders have been
 simplified by removing vertices of borders using \verb{st_simplify\{sf\}} preserving
 topology with a \code{dTolerance} of 100.}
 
+\item{output}{String. Type of object returned by the function. Defaults to
+\code{"sf"}, which loads the data into memory as an sf object. Alternatively,
+\code{"duckdb"} returns a lazy spatial table backed by DuckDB via the
+duckspatial package, and \code{"arrow"} returns an Arrow dataset. Both
+\code{"duckdb"} and \code{"arrow"} support out-of-memory processing of large
+data sets.}
+
 \item{showProgress}{Logical. Defaults to \code{TRUE} display progress bar.}
 
 \item{cache}{Logical. Whether the function should read the data cached
@@ -35,52 +45,27 @@ locally, which is faster. Defaults to \code{cache = TRUE}. By default,
 \code{geobr} stores data files in a temporary directory that exists only
 within each R session. If \code{cache = FALSE}, the function will download
 the data again and overwrite the local file.}
+
+\item{verbose}{A logical. If \code{TRUE} (the default), the function prints
+informative messages and shows download progress bar. If \code{FALSE}, the
+function is silent.}
 }
 \value{
-An \verb{"sf" "data.frame"} object
+An \verb{"sf" "data.frame"} OR an \code{ArrowObject}
 }
 \description{
 Data at scale 1:250,000, using Geodetic reference system "SIRGAS2000" and CRS(4674)
 }
 \examples{
-\dontshow{if (identical(tolower(Sys.getenv("NOT_CRAN")), "true")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (identical(tolower(Sys.getenv("NOT_CRAN")), "true")) withAutoprint(\{ # examplesIf}
 # Read an specific micro region a given year
-  micro <- read_micro_region(code_micro=11008, year=2018)
+micro <- read_micro_region(code_micro=11008, year=2018)
 
 # Read micro regions of a state at a given year
-  micro <- read_micro_region(code_micro=12, year=2017)
-  micro <- read_micro_region(code_micro="AM", year=2000)
+micro <- read_micro_region(code_micro="AM", year=2018)
+micro <- read_micro_region(code_micro=12, year=2018)
 
 # Read all micro regions at a given year
-  micro <- read_micro_region(code_micro="all", year=2010)
+ micro <- read_micro_region(code_micro="all", year=2018)
 \dontshow{\}) # examplesIf}
 }
-\seealso{
-Other area functions: 
-\code{\link{read_amazon}()},
-\code{\link{read_biomes}()},
-\code{\link{read_capitals}()},
-\code{\link{read_comparable_areas}()},
-\code{\link{read_country}()},
-\code{\link{read_disaster_risk_area}()},
-\code{\link{read_health_facilities}()},
-\code{\link{read_health_region}()},
-\code{\link{read_immediate_region}()},
-\code{\link{read_indigenous_land}()},
-\code{\link{read_intermediate_region}()},
-\code{\link{read_meso_region}()},
-\code{\link{read_metro_area}()},
-\code{\link{read_municipal_seat}()},
-\code{\link{read_municipality}()},
-\code{\link{read_neighborhood}()},
-\code{\link{read_pop_arrangements}()},
-\code{\link{read_region}()},
-\code{\link{read_schools}()},
-\code{\link{read_semiarid}()},
-\code{\link{read_state}()},
-\code{\link{read_statistical_grid}()},
-\code{\link{read_urban_area}()},
-\code{\link{read_urban_concentrations}()},
-\code{\link{read_weighting_area}()}
-}
-\concept{area functions}

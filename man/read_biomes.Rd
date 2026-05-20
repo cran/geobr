@@ -4,10 +4,18 @@
 \alias{read_biomes}
 \title{Download spatial data of Brazilian biomes}
 \usage{
-read_biomes(year = 2019, simplified = TRUE, showProgress = TRUE, cache = TRUE)
+read_biomes(
+  year,
+  simplified = TRUE,
+  output = "sf",
+  showProgress = TRUE,
+  cache = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
-\item{year}{Numeric. Year of the data in YYYY format. Defaults to \code{2019}.}
+\item{year}{Numeric. Year of the data in YYYY format. It defaults to \code{NULL}
+and reads the data from the latest year available.}
 
 \item{simplified}{Logic \code{FALSE} or \code{TRUE}, indicating whether the function
 should return the data set with 'original' spatial resolution or a data set
@@ -16,6 +24,13 @@ statistics users should set \code{simplified = FALSE}. Borders have been
 simplified by removing vertices of borders using \verb{st_simplify\{sf\}} preserving
 topology with a \code{dTolerance} of 100.}
 
+\item{output}{String. Type of object returned by the function. Defaults to
+\code{"sf"}, which loads the data into memory as an sf object. Alternatively,
+\code{"duckdb"} returns a lazy spatial table backed by DuckDB via the
+duckspatial package, and \code{"arrow"} returns an Arrow dataset. Both
+\code{"duckdb"} and \code{"arrow"} support out-of-memory processing of large
+data sets.}
+
 \item{showProgress}{Logical. Defaults to \code{TRUE} display progress bar.}
 
 \item{cache}{Logical. Whether the function should read the data cached
@@ -23,48 +38,21 @@ locally, which is faster. Defaults to \code{cache = TRUE}. By default,
 \code{geobr} stores data files in a temporary directory that exists only
 within each R session. If \code{cache = FALSE}, the function will download
 the data again and overwrite the local file.}
+
+\item{verbose}{A logical. If \code{TRUE} (the default), the function prints
+informative messages and shows download progress bar. If \code{FALSE}, the
+function is silent.}
 }
 \value{
-An \verb{"sf" "data.frame"} object
+An \verb{"sf" "data.frame"} OR an \code{ArrowObject}
 }
 \description{
-This data set includes  polygons of all biomes present in Brazilian territory
-and coastal area. The latest data set dates to 2019 and it is available at
-scale 1:250.000. The 2004 data set is at the scale 1:5.000.000. The original
-data comes from IBGE. More information at \url{https://www.ibge.gov.br/apps/biomas/}
+This data set includes  polygons of all biomes present in the Brazilian territory
+and coastal area. Data comes from IBGE. More information at \url{https://www.ibge.gov.br/geociencias/cartas-e-mapas/informacoes-ambientais/15842-biomas.html}
 }
 \examples{
-\dontshow{if (identical(tolower(Sys.getenv("NOT_CRAN")), "true")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (identical(tolower(Sys.getenv("NOT_CRAN")), "true")) withAutoprint(\{ # examplesIf}
 # Read biomes
-b <- read_biomes(year = 2019)
+b <- read_biomes(year = 2025)
 \dontshow{\}) # examplesIf}
 }
-\seealso{
-Other area functions: 
-\code{\link{read_amazon}()},
-\code{\link{read_capitals}()},
-\code{\link{read_comparable_areas}()},
-\code{\link{read_country}()},
-\code{\link{read_disaster_risk_area}()},
-\code{\link{read_health_facilities}()},
-\code{\link{read_health_region}()},
-\code{\link{read_immediate_region}()},
-\code{\link{read_indigenous_land}()},
-\code{\link{read_intermediate_region}()},
-\code{\link{read_meso_region}()},
-\code{\link{read_metro_area}()},
-\code{\link{read_micro_region}()},
-\code{\link{read_municipal_seat}()},
-\code{\link{read_municipality}()},
-\code{\link{read_neighborhood}()},
-\code{\link{read_pop_arrangements}()},
-\code{\link{read_region}()},
-\code{\link{read_schools}()},
-\code{\link{read_semiarid}()},
-\code{\link{read_state}()},
-\code{\link{read_statistical_grid}()},
-\code{\link{read_urban_area}()},
-\code{\link{read_urban_concentrations}()},
-\code{\link{read_weighting_area}()}
-}
-\concept{area functions}
