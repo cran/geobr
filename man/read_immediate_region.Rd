@@ -15,8 +15,7 @@ read_immediate_region(
 )
 }
 \arguments{
-\item{year}{Numeric. Year of the data in YYYY format. It defaults to \code{NULL}
-and reads the data from the latest year available.}
+\item{year}{Numeric. Year of the data in \code{YYYY} format.}
 
 \item{code_immediate}{6-digit code of an immediate region. If the two-digit
 code or a two-letter uppercase abbreviation of a state is passed, (e.g.
@@ -61,13 +60,13 @@ Brazil created after 2017 by IBGE. These regions were created to replace the
 \examples{
 \dontshow{if (identical(tolower(Sys.getenv("NOT_CRAN")), "true")) withAutoprint(\{ # examplesIf}
 # Read an specific immediate region
-im <- read_immediate_region(code_immediate=110006, year = 2024)
+im <- read_immediate_region(code_immediate = 110006, year = 2024)
 
 # Read immediate regions of a state
-im <- read_immediate_region(code_immediate="AM", year = 2024)
-im <- read_immediate_region(code_immediate=12, year = 2024)
+im <- read_immediate_region(code_immediate = "AM", year = 2024)
+im <- read_immediate_region(code_immediate = 12, year = 2024)
 
 # Read all immediate regions of the country
-im <- read_immediate_region(code_immediate="all", year = 2024)
+im <- read_immediate_region(code_immediate = "all", year = 2024)
 \dontshow{\}) # examplesIf}
 }

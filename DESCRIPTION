@@ -1,7 +1,7 @@
 Type: Package
 Package: geobr
 Title: Download Official Spatial Data Sets of Brazil
-Version: 2.0.0
+Version: 2.0.1
 Authors@R: c(person(given="Rafael H. M.", family="Pereira", email="rafa.pereira.br@gmail.com", role=c("aut", "cre"), comment = c(ORCID = "0000-0003-2125-7465")),
             person(given="Rogério Jerônimo", family="Barbosa", role=c("aut")),
             person(given="Caio Nogueira", family="Goncalves", role=c("ctb")),
@@ -24,6 +24,7 @@ Authors@R: c(person(given="Rafael H. M.", family="Pereira", email="rafa.pereira.
 	          person(given="Alessandro", family="Samuel-Rosa", role="ctb"),
 	          person(given="Daniel", family="Ferreira", role="ctb"),
 	          person(given="Marcus", family="Saraiva", role="ctb"),
+	          person(given="Maken ", family="Rosa", role="ctb"),
             person(given="Beatriz", family="Milz", , role = "ctb", comment = c(ORCID = "0000-0002-3064-4486")),
             person("ITpS - Instituto Todos pela Saúde", role = "fnd"),
             person("Ipea - Institue for Applied Economic Research", role = c("cph", "fnd"))
@@ -39,17 +40,16 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: TRUE
 Depends: R (>= 4.1.0)
-Imports: checkmate, cli, curl (>= 5.0.0), dplyr (>= 0.8-3), DBI,
-        duckdb, duckspatial(>= 1.1.0), fs, glue, httr2, methods,
-        nanoarrow, piggyback, rlang, sf (>= 0.9-3), sfheaders, stringr,
+Imports: arrow (>= 20.0.0), checkmate, cli, curl (>= 5.0.0), dplyr (>=
+        0.8-3), DBI, duckdb, duckspatial(>= 1.1.0), fs, glue, httr2,
+        methods, nanoarrow, rlang, sf (>= 0.9-3), sfheaders, stringr,
         utils
-Suggests: arrow (>= 20.0.0), censobr (>= 0.3.2), covr, data.table,
-        geoarrow (>= 0.4.2), ggplot2 (>= 3.3.1), knitr, rmarkdown,
-        scales, testthat
-RoxygenNote: 7.3.3
+Suggests: censobr (>= 0.3.2), covr, data.table, geoarrow (>= 0.4.2),
+        ggplot2 (>= 3.3.1), knitr, rmarkdown, scales, testthat
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0
 NeedsCompilation: no
-Packaged: 2026-05-20 10:22:25 UTC; rafap
+Packaged: 2026-06-23 03:12:02 UTC; rafap
 Author: Rafael H. M. Pereira [aut, cre] (ORCID:
     <https://orcid.org/0000-0003-2125-7465>),
   Rogério Jerônimo Barbosa [aut],
@@ -73,9 +73,10 @@ Author: Rafael H. M. Pereira [aut, cre] (ORCID:
   Alessandro Samuel-Rosa [ctb],
   Daniel Ferreira [ctb],
   Marcus Saraiva [ctb],
+  Maken Rosa [ctb],
   Beatriz Milz [ctb] (ORCID: <https://orcid.org/0000-0002-3064-4486>),
   ITpS - Instituto Todos pela Saúde [fnd],
   Ipea - Institue for Applied Economic Research [cph, fnd]
 Maintainer: Rafael H. M. Pereira <rafa.pereira.br@gmail.com>
 Repository: CRAN
-Date/Publication: 2026-05-20 12:30:09 UTC
+Date/Publication: 2026-06-23 10:00:29 UTC
